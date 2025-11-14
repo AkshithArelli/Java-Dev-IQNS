@@ -639,7 +639,7 @@ Enums are preferred in modern Java for all domain-specific fixed categories.
 
 ----------
 
-# Fail-Fast vs Fail-Safe
+# 5. Fail-Fast vs Fail-Safe
 
 1. Fail-Fast Iterator
 

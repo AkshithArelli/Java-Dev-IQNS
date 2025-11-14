@@ -1,4 +1,4 @@
-### 1. OOPs
+# 1. OOPs
 
 ✅ OOPS Concepts (Object-Oriented Programming) – Interview Explanation
 
@@ -204,7 +204,7 @@ Then explain each in one line, with example if required.
 
 -------------
 
-### 2. Exception Hierarchy
+# 2. Exception Hierarchy
 ```
 java.lang.Object
      ↓
@@ -355,7 +355,7 @@ Unchecked			RuntimeException	No	Code bugs, invalid input, illegal states
 
 ⸻
 
-# Why do we need to use super(message); in custom exceptions?
+## Why do we need to use super(message); in custom exceptions?
 
 
 Because Exception, RuntimeException, and Throwable (the parent classes) already have a constructor that accepts an error message.
@@ -445,7 +445,7 @@ These help track real underlying failures.
 
 ---------------
 
-### 3. try-with-resources
+# 3. try-with-resources
 
 try-with-resources is a Java feature that automatically closes resources (like files, DB connections, sockets, streams) after their usage — without requiring a finally block.
 
@@ -550,7 +550,7 @@ try (MyResource r = new MyResource()) {
 
 ------------------
 
-### 4. Constants vs Enums
+# 4. Constants vs Enums
 
 Here is a clear and interview-friendly explanation of Enums vs Constants in Java:
 
@@ -638,3 +638,120 @@ enum Direction {
 Enums are preferred in modern Java for all domain-specific fixed categories.
 
 ----------
+
+# Fail-Fast vs Fail-Safe
+
+1. Fail-Fast Iterator
+
+A fail-fast iterator immediately throws an exception if the underlying collection is structurally modified while iterating.
+
+🔥 Example collections (fail-fast)
+
+	•	ArrayList
+	•	HashMap
+	•	LinkedList
+	•	HashSet
+	•	Vector (iterator)
+	•	Most collections from java.util package
+
+🔥 Behavior
+
+If the collection is modified (add/remove) during iteration:
+
+👉 ConcurrentModificationException is thrown.
+
+✔ Why?
+
+Fail-fast iterators use a variable called modCount.
+
+Every structural modification changes the modCount.
+
+Iterator compares expectedModCount with modCount. If mismatch → throw exception.
+
+⸻
+
+❌ Fail-Fast Example
+```java
+List<String> list = new ArrayList<>();
+list.add("A");
+list.add("B");
+list.add("C");
+
+for (String s : list) {          // iterator internally
+    list.add("D");               // modification during iteration
+}
+```
+👉 This throws ConcurrentModificationException.
+
+⸻
+
+2. Fail-Safe Iterator
+
+Fail-safe iterators do NOT throw exceptions if the collection is modified during iteration.
+
+🔥 Example collections (fail-safe)
+
+Collections from java.util.concurrent package:
+
+	•	CopyOnWriteArrayList
+	•	ConcurrentHashMap
+	•	ConcurrentSkipListMap
+	•	ConcurrentSkipListSet
+
+🔥 Behavior
+
+Fail-safe iterators work on a clone (copy) of the collection.
+
+👉 Modifying the original collection does not affect the iterator.
+👉 No ConcurrentModificationException.
+
+⸻
+
+✔ Fail-Safe Example
+```java
+CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList<>();
+list.add("A");
+list.add("B");
+list.add("C");
+
+for (String s : list) {
+    list.add("D");   // allowed
+}
+```
+👉 No exception.
+👉 Iterator reads old snapshot; new values appear after iteration ends.
+
+⸻
+
+🔥 Key Differences (Interview Table)
+```
+Feature								Fail-Fast										Fail-Safe
+Behavior on modification			Throws ConcurrentModificationException			No exception
+Works on							Actual collection								Copy (snapshot)
+Memory usage						Low												High (copy created)
+Speed								Faster											Slower
+Example collections					ArrayList, HashMap, HashSet						CopyOnWriteArrayList, ConcurrentHashMap
+Thread-safety						Not thread-safe									Thread-safe
+Iterator type						Fail-fast iterator								Snapshot iterator
+```
+
+⸻
+
+🧠 Why do they exist?
+
+Fail-Fast
+
+	•	Detect inconsistent modifications quickly.
+	•	Prevents unpredictable behavior.
+
+Fail-Safe
+
+	•	Useful for concurrent environments.
+	•	Allows iteration while modifications happen.
+
+⸻
+
+🎯 Interview Summary (Best Answer)
+
+Fail-fast iterators throw ConcurrentModificationException if the collection is structurally modified during iteration because they work on the actual collection. Fail-safe iterators do not throw exceptions because they work on a cloned snapshot of the collection. Fail-safe is used in concurrent collections, while fail-fast is used in regular collections.
+

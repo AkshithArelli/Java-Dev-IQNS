@@ -31,7 +31,7 @@ These principles help in building systems that are easy to maintain, extend, and
 
 ---
 
-1. SRP – Single Responsibility Principle
+### 1. SRP – Single Responsibility Principle
 
 ✅ Simple Definition:
 
@@ -109,7 +109,7 @@ Saver changes if file format/location changes.
 
 ---
 
-2. OCP – Open Closed Principle
+### 2. OCP – Open Closed Principle
 
 ✅ Simple Definition:
 
@@ -176,7 +176,7 @@ No need to touch existing code — just extend it!
 
 ---
 
-3. LSP – Liskov Substitution Principle
+### 3. LSP – Liskov Substitution Principle
 
 Definition:
 
@@ -241,7 +241,7 @@ Now, Sparrow and Ostrich follow their correct capabilities — no broken behavio
 ---
 
 
-4. ISP – Interface Segregation Principle
+### 4. ISP – Interface Segregation Principle
 
 ✅ Simple Definition:
 
@@ -313,7 +313,7 @@ ISP	Don’t make classes implement things they don’t need	Split large interfac
 
 ---
 
-5. Dependency Inversion Principle (DIP)
+### 5. Dependency Inversion Principle (DIP)
 
 ✅ Simple Definition:
 

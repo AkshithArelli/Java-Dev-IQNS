@@ -755,3 +755,64 @@ Fail-Safe
 
 Fail-fast iterators throw ConcurrentModificationException if the collection is structurally modified during iteration because they work on the actual collection. Fail-safe iterators do not throw exceptions because they work on a cloned snapshot of the collection. Fail-safe is used in concurrent collections, while fail-fast is used in regular collections.
 
+
+⸻
+
+### ✅ Abstract Class vs Interface (Concise + Example)
+
+Abstract Class
+
+	•	Can have abstract + concrete methods
+	•	Can have instance variables
+	•	Can have constructors
+	•	Single inheritance
+	•	Used when objects share common behavior + partial implementation
+
+Example
+```java
+abstract class Animal {
+    void eat() { System.out.println("Eating..."); }   // concrete method
+    abstract void sound();                           // abstract method
+}
+
+class Dog extends Animal {
+    @Override
+    void sound() {
+        System.out.println("Bark");
+    }
+}
+```
+
+⸻
+
+Interface
+
+	•	Only abstract methods (until Java 8)
+	•	Can have default & static methods
+	•	Only public static final constants
+	•	No constructors
+	•	Supports multiple inheritance
+	•	Used when classes just need to follow a contract
+
+Example
+```java
+interface Vehicle {
+    void start();                 // implicitly abstract
+}
+
+class Car implements Vehicle {
+    @Override
+    public void start() {
+        System.out.println("Car starting...");
+    }
+}
+```
+
+⸻
+
+🧠 One-line memory trick
+
+	•	Interface = “What to do” (no implementation).
+	•	Abstract class = “What + partial how to do” (some implementation).
+
+⸻

@@ -383,3 +383,142 @@ public class Main {
 new HttpRequest.Builder().header().body().build();
 ``
 ⸻
+
+
+### Proxy Design Pattern
+
+Proxy Pattern provides a substitute or placeholder object that controls access to another object.
+
+You use it when you want to add:
+	•	Logging
+	•	Security checks
+	•	Caching
+	•	Lazy loading
+	•	Access control
+without changing the real object’s code.
+
+⸻
+
+🎯 Simple Real-Life Example
+
+You cannot talk directly to a celebrity →
+
+You talk to their agent (proxy) →
+
+The agent:
+
+	•	filters calls
+	•	handles scheduling
+	•	protects the celebrity
+
+Celebrity = Real Object
+
+Agent = Proxy
+
+⸻
+
+🎯 When to Use Proxy
+
+	•	To add security before calling real service
+	•	To cache results
+	•	To lazy-load heavy objects
+	•	When real object is remote (RPC, REST)
+	•	To maintain control on access
+
+⸻
+
+🧠 Interview-Friendly UML (Simple)
+
+Client → Proxy → RealSubject
+
+Both Proxy and RealSubject implement the same interface.
+
+⸻
+
+✅ Simple Java Example (Best for interviews)
+
+1. Common interface
+```java
+interface Service {
+    void request();
+}
+```
+2. Real object
+```java
+class RealService implements Service {
+    public void request() {
+        System.out.println("Real service is doing the work...");
+    }
+}
+```
+3. Proxy object (adds access control + logging)
+```java
+class ServiceProxy implements Service {
+
+    private RealService realService;
+    private boolean isAuthenticated;
+
+    public ServiceProxy(boolean isAuthenticated) {
+        this.isAuthenticated = isAuthenticated;
+    }
+
+    @Override
+    public void request() {
+        if (!isAuthenticated) {
+            System.out.println("Access denied! Authentication required.");
+            return;
+        }
+
+        System.out.println("Proxy: Logging before calling real service...");
+
+        if (realService == null) {
+            realService = new RealService(); // lazy loading
+        }
+
+        realService.request();
+    }
+}
+```
+4. Client usage
+```java
+public class Main {
+    public static void main(String[] args) {
+
+        Service service = new ServiceProxy(false);
+        service.request(); // Access denied
+
+        Service service2 = new ServiceProxy(true);
+        service2.request(); // Logs + calls real service
+    }
+}
+```
+
+⸻
+
+📌 Output
+```
+Access denied! Authentication required.
+
+Proxy: Logging before calling real service...
+Real service is doing the work...
+```
+
+⸻
+
+🎤 How to give the answer in interview (30-second version)
+
+“Proxy pattern provides a substitute object that controls access to the real object.
+It adds extra features like authentication, logging, caching, or lazy loading without modifying the real object’s code.
+The client interacts with the proxy which decides whether to forward the request to the actual object.”
+
+⸻
+
+⭐ Real-time example in microservices
+
+	•	Spring AOP uses proxy
+	•	Spring Security uses proxy for authentication
+	•	Hibernate uses proxy for lazy loading
+	•	Feign clients act like proxies for REST services
+
+⸻
+

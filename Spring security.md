@@ -526,3 +526,170 @@ When users talk to systems →
 Refresh Token
 
 Like a user’s long-term login cookie.
+
+
+⸻
+
+### 1. What Does an Access Token Contain? (Interview Answer)
+
+“An access token—usually a JWT—contains all the information a microservice needs to identify the user and authorize the request, without calling any database.”
+
+A JWT access token has three main parts:
+
+⸻
+
+🔹 1. Header (Metadata)
+
+Contains:
+
+	•	Algorithm used to sign JWT (HS256 / RS256)
+	•	Token type (JWT)
+
+Example:
+
+{
+  "alg": "RS256",
+  "typ": "JWT"
+}
+
+
+⸻
+
+🔹 2. Payload (Claims) — This is the main part
+
+Contains details about the user and token:
+
+Standard claims
+```
+Claim			Meaning
+sub				User ID (“subject”)
+exp				Expiry time
+iat				Issued time
+iss				Issuer (Auth server)
+aud				Audience (which services can use this token)
+```
+Custom claims
+```
+Claim	Meaning
+roles	User roles → [“ADMIN”, “USER”]
+scope	Permissions → “read write”
+email	Email (optional)
+```
+
+⸻
+
+🔹 3. Signature
+
+The most important part.
+
+	•	Generated using header + payload + private key
+	•	Prevents tampering
+	•	Ensures token is authentic, issued by your auth server
+
+⸻
+
+🎯 Summary (Use this sentence in interview)
+
+“A JWT access token contains the user identity, roles, permissions, expiry time, issuer, audience, and a digital signature to prevent tampering.”
+
+⸻
+
+### 2. How Microservice B Validates the Access Token (Interview Answer)
+
+When Microservice A calls Microservice B:
+
+Authorization: Bearer <access_token>
+
+Microservice B uses Spring Security or a JWT filter to validate the token in these steps:
+
+⸻
+
+Step 1 — Extract Token
+
+From Authorization header.
+
+⸻
+
+Step 2 — Validate Signature
+
+Microservice B uses the public key (RS256) or shared secret (HS256) to check:
+
+	•	Is this token signed by our auth server?
+	•	Has it been modified?
+
+If signature invalid → 401 Unauthorized
+
+This prevents hackers from editing roles or expiry.
+
+⸻
+
+Step 3 — Validate Expiry
+
+Check exp (expiry claim):
+
+	•	If expired → reject token (401)
+
+⸻
+
+Step 4 — Validate Issuer
+
+Check iss claim:
+
+iss must equal https://auth.mycompany.com
+
+Reject if token is issued by unknown server.
+
+⸻
+
+Step 5 — Validate Audience
+
+Check aud claim:
+
+aud must contain "microservice-B"
+
+Ensures the token is actually meant for this service.
+
+⸻
+
+Step 6 — Extract User Information
+
+From payload:
+
+	•	userId = payload.sub
+	•	roles = payload.roles
+	•	scope = payload.scope
+
+These are used to build a SecurityContext in Spring.
+
+⸻
+
+Step 7 — Authorize Request
+
+Microservice B checks:
+
+	•	Is this endpoint allowed for the roles?
+	•	Does scope allow this operation?
+
+Example:
+```
+/admin → only ADMIN role
+/orders → must have scope orders.read
+```
+
+⸻
+
+🎯 Summary (Use this sentence in interview)
+
+“Microservice B validates the access token by verifying its signature, expiry, issuer, audience, and then extracting claims like user ID and roles to authorize the request.”
+
+⸻
+
+⭐ Final Short Interview Answer
+
+Q: What does an access token contain and how is it validated?
+
+A:
+“An access token, usually a JWT, contains user identity (sub), roles, permissions (scope), expiry time (exp), issuer (iss), audience (aud), and a digital signature.
+Microservice B validates the token by checking the signature to ensure it wasn’t tampered with, verifying expiry, issuer, and audience, and then reading claims from the payload to authorize the request. No database lookup is needed because JWT is self-contained.”
+
+

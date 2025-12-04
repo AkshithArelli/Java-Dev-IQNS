@@ -293,3 +293,108 @@ Profiles isolate environment-specific configurations. Beans with @Profile are lo
 Spring Boot Profiles allow easy switching between dev, test, and prod environments without changing code.
 
 ⸻
+
+# 🌱 What is a Bean?
+
+A Bean in Spring is:
+
+An object that is instantiated, assembled, and managed by the Spring IoC container.
+
+	•	Typically, beans are your service classes, repositories, controllers, etc.
+	•	Spring manages their lifecycle, dependencies, and configuration.
+	•	Created using:
+	•	XML (<bean> tag)
+	•	Annotations (@Component, @Service, @Repository, @Controller)
+
+Example:
+```java
+@Service
+public class UserService {
+    public void createUser() { ... }
+}
+```
+Here, UserService is a Spring Bean.
+
+⸻
+
+⚡ Bean Life Cycle
+
+Spring manages beans in 6 main steps:
+
+	1.	Instantiation: Spring creates the bean instance.
+	
+	2.	Populate Properties: Spring injects dependencies (DI).
+	
+	3.	BeanNameAware / BeanFactoryAware / ApplicationContextAware:
+	
+		Spring passes contextual information to the bean (optional).
+		
+	4.	Pre-initialization (BeanPostProcessor – before init):
+	
+		Spring allows custom modification of bean before initialization.
+	
+	5.	Initialization (@PostConstruct / afterPropertiesSet / init-method):
+		
+		Bean is fully initialized and ready to use.
+	
+	6.	Post-initialization (BeanPostProcessor – after init):
+
+		Spring can modify the fully initialized bean.
+	
+	7.	Destruction (@PreDestroy / destroy-method):
+		
+		Called when the container shuts down, e.g., for cleanup.
+
+Diagram (simplified):
+```
+Instantiate → Populate Properties → Pre-initialize → Initialize → Post-initialize → Ready → Destroy
+```
+Example with Annotations:
+```java
+@Component
+public class UserService {
+
+    @PostConstruct
+    public void init() {
+        System.out.println("Bean is initialized");
+    }
+
+    @PreDestroy
+    public void cleanup() {
+        System.out.println("Bean is destroyed");
+    }
+}
+```
+
+⸻
+
+🌐 Bean Scopes
+
+Bean Scope defines how many instances of a bean Spring will create and when.
+```
+Scope			Description								Default?
+Singleton		Single instance per Spring container	✅ Yes
+Prototype		New instance every time requested		❌
+Request			One instance per HTTP request			❌
+Session			One instance per HTTP session			❌
+Application		One instance per ServletContext			❌
+Websocket		One instance per WebSocket				❌
+```
+Example: Singleton vs Prototype
+```java
+@Component
+@Scope("prototype")
+public class MyBean { ... }
+```
+	•	Singleton → Spring creates 1 bean and shares it.
+	•	Prototype → Spring creates a new bean every time getBean() is called.
+
+⸻
+
+🎯 Notes
+
+	•	Bean: Managed object in Spring IoC container
+	•	Life Cycle: Instantiation → Dependency Injection → Initialization → Ready → Destruction
+	•	Scopes: Control how many instances are created and their lifetime (singleton is default)
+
+⸻

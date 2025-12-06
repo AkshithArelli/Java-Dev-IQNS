@@ -319,31 +319,8 @@ Here, UserService is a Spring Bean.
 
 ⚡ Bean Life Cycle
 
-Spring manages beans in 6 main steps:
+<img width="434" height="407" alt="image" src="https://github.com/user-attachments/assets/cd103fb9-1a90-49df-96d9-f7b40d888e4a" />
 
-	1.	Instantiation: Spring creates the bean instance.
-	
-	2.	Populate Properties: Spring injects dependencies (DI).
-	
-	3.	BeanNameAware / BeanFactoryAware / ApplicationContextAware:
-	
-		Spring passes contextual information to the bean (optional).
-		
-	4.	Pre-initialization (BeanPostProcessor – before init):
-	
-		Spring allows custom modification of bean before initialization.
-	
-	5.	Initialization (@PostConstruct / afterPropertiesSet / init-method):
-		
-		Bean is fully initialized and ready to use.
-	
-	6.	Post-initialization (BeanPostProcessor – after init):
-
-		Spring can modify the fully initialized bean.
-	
-	7.	Destruction (@PreDestroy / destroy-method):
-		
-		Called when the container shuts down, e.g., for cleanup.
 
 Diagram (simplified):
 ```

@@ -128,7 +128,7 @@ When to use: Must-have dependencies, large apps, Spring Boot projects
 
 ⸻
 
-## m2. Setter Injection
+## 2. Setter Injection
 
 How it works: Dependencies are set via setter methods.
 ```java

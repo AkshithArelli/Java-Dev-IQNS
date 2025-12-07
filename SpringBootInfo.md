@@ -1427,3 +1427,944 @@ public class UserRequest {
 
 ---
 
+
+# Annotations
+
+
+### **Step 1: Spring Boot Core**
+
+1. @SpringBootApplication
+    
+    @SpringBootApplication is a combination of configuration, auto-configuration, and component scanning used to bootstrap a Spring Boot application.
+    
+2. @Configuration
+    
+    @Configuration tells Spring that the class defines bean methods to be managed in the IoC container.
+    
+    ```java
+    
+       @Configuration
+       public class AppConfig {
+       
+       @Bean
+       public RestTemplate restTemplate() {
+           return new RestTemplate();
+          }
+    
+       }
+    
+    ```
+    
+3. @ComponentScan
+    
+    @ComponentScan tells Spring which packages to scan for beans to add to the application context.
+    
+    ```java
+    
+       @ComponentScan(basePackages = "com.example.services")
+    
+    ```
+    
+4. @EnableAutoConfiguration
+    
+    @EnableAutoConfiguration tells Spring Boot to automatically configure beans based on dependencies in the classpath.
+Here is a clear, simple, interview-friendly explanation of all the annotations in Step 2: Bean Creation & Dependency Injection (DI).
+
+⸻
+
+✅ STEP 2: Bean Creation & Dependency Injection Annotations
+
+⸻
+
+### 1. @Component
+
+✔ Marks a class as a Spring-managed bean.
+
+✔ Spring automatically detects it during component scanning.
+
+Use it when: You want to create a simple bean (general purpose).
+```java
+@Component
+public class EmailValidator {
+}
+```
+
+⸻
+
+### 2. @Service
+
+✔ Specialized version of @Component.
+
+✔ Used for business logic layer.
+
+Extra benefit: Spring may add AOP (transactions, logging) on service methods.
+```java
+@Service
+public class OrderService {
+}
+```
+
+⸻
+
+### 3. @Repository
+
+✔ Another specialization of @Component.
+
+✔ Represents the DAO/data layer.
+
+Extra benefit:
+
+Spring wraps database exceptions into Spring DataAccessException.
+```java
+@Repository
+public class UserRepository {
+}
+```
+
+⸻
+
+### 4. @Bean
+
+✔ Used inside a @Configuration class.
+
+✔ Manually creates a bean (when you don’t want component scan).
+
+Use it when:
+
+	•	You want to define 3rd-party class as bean
+	•	You need custom initialization logic
+```java
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+}
+```
+
+⸻
+
+### 5. @Autowired
+
+✔ Tells Spring to inject a dependency automatically.
+
+Can be used on:
+
+	•	Constructor (recommended)
+	•	Field
+	•	Setter
+```java
+@Service
+public class PaymentService {
+
+    private final UpiService upiService;
+
+    @Autowired
+    public PaymentService(UpiService upiService) {
+        this.upiService = upiService;
+    }
+}
+```
+
+⸻
+
+### 6. @Inject
+
+✔ Same as @Autowired
+
+✔ Comes from Javax / JSR-330 standard
+
+✔ Does not support required=false like @Autowired
+
+Usage is same:
+```java
+@Inject
+private PaymentGateway gateway;
+```
+
+⸻
+
+🔍 Autowired vs Inject
+```
+Feature	              @Autowired	            @Inject
+Framework	           Spring	                  Java Standard
+required=false         	✔ Yes	                  ❌ No
+Recommended?	         ✔ Yes (more features)	OK but fewer features
+```
+
+⸻
+
+### 7. @Qualifier
+
+✔ Used when multiple beans of same type exist.
+
+✔ Helps Spring choose the correct bean to inject.
+
+```java
+@Service
+public class PaymentService {
+
+    @Autowired
+    @Qualifier("phonePePayment")
+    private Payment payment;
+}
+```
+If you have:
+```java
+@Component("gPayPayment")
+class GPayPayment implements Payment {}
+
+@Component("phonePePayment")
+class PhonePePayment implements Payment {}
+```
+
+⸻
+
+### 8. @Primary
+
+✔ If several beans have same type → Spring injects the primary bean by default.
+```java
+@Primary
+@Component
+public class DefaultPayment implements Payment {}
+```
+If no @Qualifier is used → this one is selected.
+
+⸻
+
+🔍 Qualifier vs Primary
+```
+Case	                              Behavior
+Multiple beans, no @Qualifier	      @Primary bean is injected
+@Qualifier is present	            Qualifier overrides @Primary
+```
+
+⸻
+
+### 9. @Lazy
+
+✔ Bean is created only on first use, not during startup.
+
+✔ Useful for:
+
+   •	Heavy beans
+	•	Cyclic dependency prevention
+```java
+@Autowired
+@Lazy
+private NotificationService notificationService;
+```
+Lazy bean will not load during application startup → only when required.
+
+⸻
+
+### 10. @Scope
+
+✔ Defines the lifecycle of a bean.
+
+Common scopes:
+```
+Scope	      Meaning
+singleton	1 instance per Spring container (default)
+prototype	New instance every time it’s injected
+request	   One per HTTP request
+session	   One per user session
+```
+Example:
+```java
+@Component
+@Scope("prototype")
+public class Task {
+}
+```
+
+⸻
+
+🎉 Summary Table
+```
+Annotation	      Purpose
+@Component	      General Spring bean
+@Service	         Business layer bean
+@Repository       DAO layer bean (exception translation)
+@Bean	            Manual bean creation
+@Autowired	      Spring DI
+@Inject	         Java standard DI
+@Qualifier	      Select one bean among many
+@Primary	         Default bean when multiple exist
+@Lazy	            Delay bean creation
+@Scope	         Bean lifecycle control
+```
+
+⸻
+
+Here is a simple, clean, interview-friendly explanation of all Step 3: Spring Bean Lifecycle Annotations.
+
+⸻
+
+✅ STEP 3: Bean Lifecycle Annotations
+
+⸻
+
+### 1. @PostConstruct
+
+✔ When is it called?
+
+Runs after dependency injection and after the bean is fully created, but before the bean is used.
+
+✔ Why do we use it?
+
+For initialization tasks such as:
+
+	•	Opening DB connections
+	•	Loading cache
+	•	Validating configuration
+	•	Starting background schedulers
+
+✔ Example
+```java
+@Component
+public class CacheLoader {
+
+    @PostConstruct
+    public void init() {
+        System.out.println("Loading cache data...");
+    }
+}
+```
+📌 Internally handled by CommonAnnotationBeanPostProcessor.
+
+⸻
+
+### 2. @PreDestroy
+
+✔ When is it called?
+
+Executed just before the bean is destroyed.
+
+✔ When does bean get destroyed?
+
+	•	App shutting down
+	•	Context closing
+	•	Redeploying on a server
+
+✔ Why do we use it?
+
+For cleanup tasks like:
+
+	•	Closing DB connections
+	•	Stopping threads
+	•	Releasing resources
+	•	Flushing logs
+
+✔ Example
+```java
+@Component
+public class CacheCleaner {
+
+    @PreDestroy
+    public void cleanup() {
+        System.out.println("Clearing cache...");
+    }
+}
+```
+
+⸻
+
+### 3. @DependsOn
+
+✔ What does it do?
+
+Forces Spring to initialize certain beans before the current bean.
+
+Useful when:
+
+	•	Bean A needs Bean B loaded first.
+	•	You want strict initialization order.
+	•	Complex dependency graph.
+
+✔ Example
+```java
+@Component
+@DependsOn("databaseInitializer")
+public class ReportService {
+}
+```
+This ensures:
+```
+databaseInitializer bean → created first
+reportService → created next
+```
+✔ Real use cases
+
+	•	Load configuration before services
+	•	Initialize a cache before dependent beans
+	•	Initialize external connections first
+
+⸻
+
+### 4. @Profile
+
+✔ Purpose:
+
+Load beans only for a specific environment:
+
+Environments examples:
+
+	•	dev
+	•	test
+	•	prod
+
+✔ Example
+```java
+@Profile("dev")
+@Component
+public class DevEmailService implements EmailService {
+}
+```
+```java
+@Profile("prod")
+@Component
+public class ProdEmailService implements EmailService {
+}
+```
+
+⸻
+
+How to activate a profile?
+
+1️⃣ Using application.properties
+```
+spring.profiles.active=dev
+```
+2️⃣ Using command line
+```
+java -jar app.jar --spring.profiles.active=prod
+```
+3️⃣ Using ENV variable
+```
+export SPRING_PROFILES_ACTIVE=test
+```
+
+⸻
+
+🎯 Quick Summary Table
+```
+Annotation	      Purpose
+@PostConstruct	   Runs after bean creation (initialization tasks)
+@PreDestroy      	Runs before bean destruction (cleanup tasks)
+@DependsOn      	Controls bean initialization order
+@Profile	         Creates bean only for specific environment
+```
+⸻
+
+🚀 STEP 4: Web Layer Annotations (Spring MVC)
+
+⸻
+
+## 1. @Controller
+
+✔ What it is:
+
+Marks a class as a web controller (MVC controller).
+
+✔ Key role:
+	•	Returns views (like JSP, HTML, Thymeleaf).
+	•	Not automatically JSON.
+
+✔ Example:
+```java
+@Controller
+public class HomeController {
+    @RequestMapping("/home")
+    public String home() {
+        return "home.html"; // returns a view
+    }
+}
+```
+
+⸻
+
+## 2. @RestController
+
+✔ What it is:
+
+@Controller + @ResponseBody
+
+✔ Key role:
+	•	Returns JSON/XML directly (REST API).
+
+✔ Example:
+```java
+@RestController
+public class UserController {
+    @GetMapping("/user")
+    public User getUser() {
+        return new User("Akshith", 25); // returns JSON
+    }
+}
+```
+
+⸻
+
+## 3. @RequestMapping
+
+✔ Purpose:
+
+Maps an HTTP request to controller methods or class level.
+
+✔ Works with all HTTP methods:
+
+GET, POST, PUT, DELETE, PATCH…
+
+✔ Example:
+```java
+@RequestMapping("/api/users")
+public class UserController {
+}
+```
+
+⸻
+
+## 4. @GetMapping
+
+✔ Specialization of @RequestMapping(method = GET)
+
+Used for fetching data.
+```java
+@GetMapping("/users")
+public List<User> getUsers() { ... }
+```
+
+⸻
+
+## 5. @PostMapping
+
+✔ Used to create new resource.
+```java
+@PostMapping("/users")
+public User createUser(@RequestBody User user) { ... }
+```
+
+⸻
+
+## 6. @PutMapping
+
+✔ Used to update or replace a resource.
+```java
+@PutMapping("/users/{id}")
+public User update(@PathVariable int id, @RequestBody User user) { ... }
+```
+
+⸻
+
+## 7. @DeleteMapping
+
+✔ Used to delete a resource.
+```java
+@DeleteMapping("/users/{id}")
+public void delete(@PathVariable int id) { ... }
+```
+
+⸻
+
+## 8. @RequestParam
+
+✔ Used to extract query parameters.
+
+URL:
+
+/search?name=Akshith&age=25
+
+Example:
+```java
+@GetMapping("/search")
+public String search(@RequestParam String name, @RequestParam int age) {
+    return name + " - " + age;
+}
+```
+✔ Optional param:
+```java
+@RequestParam(required = false, defaultValue = "Guest") String name
+```
+
+⸻
+
+## 9. @PathVariable
+
+✔ Reads part of the URL path.
+
+URL:
+```
+/users/10
+```
+Example:
+```java
+@GetMapping("/users/{id}")
+public User getUser(@PathVariable int id) { ... }
+```
+
+⸻
+
+## 10. @RequestBody
+
+✔ Maps entire JSON request body into a Java object.
+
+JSON:
+```
+{
+  "name": "Akshith",
+  "age": 25
+}
+```
+Code:
+```java
+@PostMapping("/user")
+public User create(@RequestBody User user) {
+    return user;
+}
+```
+
+⸻
+
+## 11. @ResponseBody
+
+✔ Returns the method output as JSON/XML, not a view.
+
+Example:
+```java
+@Controller
+public class TestController {
+
+    @ResponseBody
+    @GetMapping("/msg")
+    public String getMsg() {
+        return "Hello World"; // returned as response body
+    }
+}
+```
+📌 Not needed in @RestController.
+
+⸻
+
+## 12. @ExceptionHandler
+
+✔ Handles exceptions at controller level.
+
+Example:
+```java
+@RestController
+public class UserController {
+
+    @GetMapping("/user/{id}")
+    public User get(@PathVariable int id) {
+        if(id == 0) throw new IllegalArgumentException("Invalid id");
+        return new User(id, "Test");
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleException(Exception ex) {
+        return ex.getMessage();
+    }
+}
+```
+
+⸻
+
+## 13. @ControllerAdvice
+
+✔ Global exception handler for all controllers.
+
+✔ Like a centralized error handling layer.
+
+Example:
+```java
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handle(Exception ex) {
+        return ResponseEntity.status(500).body(ex.getMessage());
+    }
+}
+```
+
+⸻
+
+🎯 Quick Summary Table
+```
+Annotation	      Purpose
+@Controller	      MVC controller, returns views
+@RestController	Returns JSON (REST API)
+@RequestMapping	Map URL to controller (class/method)
+@GetMapping	      GET requests
+@PostMapping	   POST requests
+@PutMapping	      PUT requests
+@DeleteMapping	   DELETE requests
+@RequestParam	   Query parameters
+@PathVariable	   Extract URL path variables
+@RequestBody	   Map JSON body to object
+@ResponseBody	   Return data as JSON
+@ExceptionHandler	Handle exceptions in a controller
+@ControllerAdvice	Global exception handling
+```
+
+⸻
+
+Here is a clean, simple, interview-ready explanation of all Step 4: Web Layer annotations.
+
+⸻
+
+🚀 STEP 4: Web Layer Annotations (Spring MVC)
+
+⸻
+
+## 1. @Controller
+
+✔ What it is:
+
+Marks a class as a web controller (MVC controller).
+
+✔ Key role:
+	•	Returns views (like JSP, HTML, Thymeleaf).
+	•	Not automatically JSON.
+
+✔ Example:
+
+@Controller
+public class HomeController {
+    @RequestMapping("/home")
+    public String home() {
+        return "home.html"; // returns a view
+    }
+}
+
+
+⸻
+
+## 2. @RestController
+
+✔ What it is:
+
+@Controller + @ResponseBody
+
+✔ Key role:
+	•	Returns JSON/XML directly (REST API).
+
+✔ Example:
+
+@RestController
+public class UserController {
+    @GetMapping("/user")
+    public User getUser() {
+        return new User("Akshith", 25); // returns JSON
+    }
+}
+
+
+⸻
+
+## 3. @RequestMapping
+
+✔ Purpose:
+
+Maps an HTTP request to controller methods or class level.
+
+✔ Works with all HTTP methods:
+
+GET, POST, PUT, DELETE, PATCH…
+
+✔ Example:
+
+@RequestMapping("/api/users")
+public class UserController {
+}
+
+
+⸻
+
+## 4. @GetMapping
+
+✔ Specialization of @RequestMapping(method = GET)
+
+Used for fetching data.
+
+@GetMapping("/users")
+public List<User> getUsers() { ... }
+
+
+⸻
+
+## 5. @PostMapping
+
+✔ Used to create new resource.
+
+@PostMapping("/users")
+public User createUser(@RequestBody User user) { ... }
+
+
+⸻
+
+## 6. @PutMapping
+
+✔ Used to update or replace a resource.
+
+@PutMapping("/users/{id}")
+public User update(@PathVariable int id, @RequestBody User user) { ... }
+
+
+⸻
+
+## 7. @DeleteMapping
+
+✔ Used to delete a resource.
+
+@DeleteMapping("/users/{id}")
+public void delete(@PathVariable int id) { ... }
+
+
+⸻
+
+## 8. @RequestParam
+
+✔ Used to extract query parameters.
+
+URL:
+
+/search?name=Akshith&age=25
+
+Example:
+
+@GetMapping("/search")
+public String search(@RequestParam String name, @RequestParam int age) {
+    return name + " - " + age;
+}
+
+✔ Optional param:
+
+@RequestParam(required = false, defaultValue = "Guest") String name
+
+
+⸻
+
+## 9. @PathVariable
+
+✔ Reads part of the URL path.
+
+URL:
+
+/users/10
+
+Example:
+
+@GetMapping("/users/{id}")
+public User getUser(@PathVariable int id) { ... }
+
+
+⸻
+
+## 10. @RequestBody
+
+✔ Maps entire JSON request body into a Java object.
+
+JSON:
+
+{
+  "name": "Akshith",
+  "age": 25
+}
+
+Code:
+
+@PostMapping("/user")
+public User create(@RequestBody User user) {
+    return user;
+}
+
+
+⸻
+
+## 11. @ResponseBody
+
+✔ Returns the method output as JSON/XML, not a view.
+
+Example:
+
+@Controller
+public class TestController {
+
+    @ResponseBody
+    @GetMapping("/msg")
+    public String getMsg() {
+        return "Hello World"; // returned as response body
+    }
+}
+
+📌 Not needed in @RestController.
+
+⸻
+
+## 12. @ExceptionHandler
+
+✔ Handles exceptions at controller level.
+
+Example:
+
+@RestController
+public class UserController {
+
+    @GetMapping("/user/{id}")
+    public User get(@PathVariable int id) {
+        if(id == 0) throw new IllegalArgumentException("Invalid id");
+        return new User(id, "Test");
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleException(Exception ex) {
+        return ex.getMessage();
+    }
+}
+
+
+⸻
+
+## 13. @ControllerAdvice
+
+✔ Global exception handler for all controllers.
+
+✔ Like a centralized error handling layer.
+
+Example:
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handle(Exception ex) {
+        return ResponseEntity.status(500).body(ex.getMessage());
+    }
+}
+
+
+⸻
+
+🎯 Quick Summary Table
+
+Annotation	Purpose
+@Controller	MVC controller, returns views
+@RestController	Returns JSON (REST API)
+@RequestMapping	Map URL to controller (class/method)
+@GetMapping	GET requests
+@PostMapping	POST requests
+@PutMapping	PUT requests
+@DeleteMapping	DELETE requests
+@RequestParam	Query parameters
+@PathVariable	Extract URL path variables
+@RequestBody	Map JSON body to object
+@ResponseBody	Return data as JSON
+@ExceptionHandler	Handle exceptions in a controller
+@ControllerAdvice	Global exception handling
+
+
+⸻

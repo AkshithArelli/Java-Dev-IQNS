@@ -456,3 +456,41 @@ boolean exists = nums.stream().anyMatch(n -> n == 20);
 ```
 
 ⸻
+
+23. Reverse each word in a sentence
+
+Input
+```
+"I love Java"
+```
+Output
+```
+"I evol avaJ"
+```
+Example
+```java
+Arrays.stream(sentence.split(" "))
+                .map(word -> (new StringBuilder(word).reverse().toString()))
+                .collect(Collectors.joining(" "));
+```
+
+Note: split a sentence which have multiple spaces or tab space or new line
+        ```java
+        str.split("\\s+")
+        ```
+        
+24. reverse the entire sentence (word order), NOT reverse individual words.
+Input
+```
+"I love Java"
+```
+Output
+```
+"I evol avaJ"
+```
+Example
+```java
+Arrays.stream(sentence.split(" "))
+                .reduce("", (a, b) -> b + " " + a);
+```
+

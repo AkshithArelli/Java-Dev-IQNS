@@ -1532,3 +1532,776 @@ volatile prevents stale reads; atomic classes prevent race conditions.
 
 ⸻
 
+# How does java handle pass by values and pass by reference
+
+Java always passes arguments by value.
+
+For primitives, the actual value is copied.
+
+For objects, the value copied is a reference, so modifying the object’s fields affects the original object, but reassigning the reference inside the method does not change the caller’s reference.
+```java
+void modify(int x) {
+    x = 50;
+}
+
+int a = 10;
+modify(a);
+
+System.out.println(a); // 10
+```
+```java
+class Student { 
+int age; 
+}
+
+void change(Student s) {
+    s.age = 25;
+}
+
+Student st = new Student();
+st.age = 20;
+
+change(st);
+System.out.println(st.age); // 25
+
+void change(Student s) {
+    s = new Student();  // reassigning local copy
+    s.age = 30;
+}
+
+Student st = new Student();
+st.age = 20;
+
+change(st);
+
+System.out.println(st.age); // 20 ❗ not 30
+```
+Here is a clean, crisp, interview-ready quick brush-up on all four topics — in your preferred structured format.
+
+⸻
+
+#  == vs .equals()
+
+✔ Definition
+
+==
+
+Compares references (memory addresses) for objects, and values for primitives.
+
+.equals()
+
+Compares content/logical equality (when overridden).
+
+⸻
+
+✔ Key Points
+```
+Comparison				==								.equals()
+Primitives				Value comparison				Not used
+Objects					Reference comparison			Content comparison (if overridden)
+Default 				equals (Object)	Same as ==		Must override for meaningful comparison
+```
+
+⸻
+
+✔ Example
+```java
+String s1 = new String("Java");
+String s2 = new String("Java");
+
+s1 == s2;        // false (different objects)
+s1.equals(s2);   // true (same content)
+```
+
+⸻
+
+⭐ One-line summary
+
+== checks reference equality; .equals() checks logical equality.
+
+⸻
+
+# Internal Working of HashMap
+
+✅ Definition
+
+HashMap stores key–value pairs in buckets using the key’s hashCode() to compute bucket index.
+
+Within the bucket, HashMap uses equals() to find the correct key.
+
+Collisions are handled using LinkedList or Red-Black Tree (Java 8+).
+
+⸻
+
+### 1️⃣ How HashMap Stores a Key (put operation)
+
+When you do:
+```java
+map.put("A", 1);
+```
+HashMap performs:
+
+Step 1: Compute hash
+```java
+int hash = "A".hashCode();
+```
+Step 2: Determine bucket index
+```java
+index = hash & (capacity - 1);
+```
+Step 3: Go to that bucket
+
+	•	If bucket empty → insert new Node → DONE
+	•	If bucket not empty → collision → go to next step
+
+Step 4: Compare keys using equals()
+
+	•	If key.equals(existingKey) → replace value
+	•	Else → add new node to bucket
+	•	As LinkedList or
+	•	As TreeNode if chain length > 8 (Java 8)
+
+⸻
+
+### 2️⃣ How HashMap Retrieves a Value (get operation)
+
+When you do:
+```java
+map.get("A");
+```
+HashMap:
+
+Step 1: Compute hash → find bucket
+
+Step 2: Traverse nodes in bucket
+
+Step 3: Compare keys via equals()
+
+If match → return value
+
+If not → keep searching
+
+If none found → return null
+
+⸻
+
+### 3️⃣ Collision Handling (VERY IMPORTANT)
+
+✔ Java 7: LinkedList → O(n) in worst case
+
+✔ Java 8+:
+
+	•	If bucket becomes too large (≥ 8 entries)
+	•	Converts list → Red-Black Tree
+	•	Lookup becomes O(log n)
+
+This prevents performance degradation from hash collisions.
+
+⸻
+
+### 4️⃣ Resizing (Rehashing)
+
+Occurs when:
+
+size > capacity * loadFactor
+
+Default load factor = 0.75
+
+On resize:
+
+	•	Capacity doubles (e.g., 16 → 32)
+	•	All keys are rehashed
+	•	Costly operation → avoid frequent resizing by setting initial capacity properly
+
+⸻
+
+### 5️⃣ Core Logic in One Sentence
+
+HashMap uses hashCode() to locate the bucket, and equals() to locate the exact key; collisions are handled using LinkedList or Red-Black Tree.
+
+⸻
+
+🧠 6️⃣ Simple Example to Remember
+```java
+HashMap<String, Integer> map = new HashMap<>();
+map.put("FB", 1);
+map.put("Ea", 2);
+```
+Why interesting?
+
+Both "FB" and "Ea" have the same hashCode(), so:
+
+	•	They land in the same bucket
+	•	HashMap uses equals() to differentiate them
+	•	Stored as separate nodes in the bucket
+
+⸻
+
+# 🚀 equals() and hashCode()
+
+✔ Definition
+
+If two objects are equal using .equals(), they must have the same hashCode().
+
+HashMap depends on this so equal keys go to the same bucket and retrieval works correctly.
+
+⸻
+
+Here is a clean, crisp, interview-ready brush-up on the difference between HashMap, Hashtable, SynchronizedMap, and ConcurrentHashMap — simplified and accurate.
+
+⸻
+
+# HashMap vs Hashtable vs SynchronizedMap vs ConcurrentHashMap
+
+⸻
+
+### ✅ 1️⃣ HashMap
+
+✔ Definition
+
+A non-thread-safe key–value map that allows one null key and multiple null values.
+
+✔ Key Points
+
+	•	Not synchronized → not safe for multithreading
+	•	Fastest in single-thread use
+	•	Allows null key & null values
+	•	Uses hashing + linked list / tree (Java 8)
+
+⸻
+
+### ✅ 2️⃣ Hashtable
+
+✔ Definition
+
+A thread-safe map where all methods are synchronized, but very slow.
+
+✔ Key Points
+
+	•	Entire table is locked → one thread at a time
+	•	Does not allow null key or null value
+	•	Legacy class (Java 1.0)
+	•	Poor scalability under load
+
+⸻
+
+### ✅ 3️⃣ SynchronizedMap
+
+Created using:
+```java
+Map m = Collections.synchronizedMap(new HashMap<>());
+```
+✔ Definition
+
+A wrapper around HashMap where all methods are synchronized.
+
+✔ Key Points
+	•	Behaves similar to Hashtable
+	•	Single lock for entire map
+	•	Safer but slow in multi-threaded scenarios
+	•	Null keys/values allowed (because underlying HashMap allows)
+
+⸻
+
+### ✅ 4️⃣ ConcurrentHashMap
+
+✔ Definition
+
+A high-performance thread-safe map using fine-grained locking and non-blocking operations (CAS).
+
+✔ Key Points
+
+	•	No global lock → multiple threads can access the map simultaneously
+	•	Uses bucket-level locking (Java 7) or Node-level CAS + sparse locking (Java 8)
+	•	Does NOT allow null key or null value
+	•	Best choice for multi-threaded environments
+	•	Extremely scalable
+
+⸻
+
+⭐ 5️⃣ One-line Interview Summary
+
+HashMap is non-thread-safe, Hashtable & SynchronizedMap use full-locking (slow), while ConcurrentHashMap uses fine-grained locking/CAS for high-performance concurrent access.
+
+⸻
+
+# Comparable vs Comparator
+
+⸻
+
+✅ 1️⃣ Definitions
+
+### Comparable
+
+Used to define the natural/default sorting order of a class. Implemented inside the class via compareTo().
+
+### Comparator
+
+Used to define custom or multiple sorting orders. Written outside the class via compare().
+
+⸻
+
+✅ 2️⃣ Method Difference
+```
+Interface	Method	Used For
+Comparable	int compareTo(T o)	Natural sorting
+Comparator	int compare(T o1, T o2)	Custom sorting
+```
+
+⸻
+
+🚀 3️⃣ When to Use Which?
+
+✔ Use Comparable when:
+
+	•	The class has one natural sorting (e.g., sorting students by rollNo).
+	•	You want objects of the class to be sortable by default.
+	•	Sorting logic belongs to the object itself.
+
+Example:
+
+String, Integer, Double → all implement Comparable.
+
+⸻
+
+✔ Use Comparator when:
+```
+	•	You want multiple sorting criteria.
+Example: Sort Students by name, then age, then marks.
+	•	You cannot modify the class (e.g., class from a library).
+	•	Sorting logic should be external.
+```
+⸻
+
+🚀 4️⃣ Comparable Example (natural sorting)
+```java
+class Student implements Comparable<Student> {
+    int id;
+    String name;
+
+    @Override
+    public int compareTo(Student other) {
+        return this.id - other.id; // sorted by id
+    }
+}
+```
+Sorting:
+```java
+Collections.sort(list); // uses compareTo()
+```
+
+⸻
+
+🚀 5️⃣ Comparator Example (custom sorting)
+```java
+Comparator<Student> byName =
+    (s1, s2) -> s1.name.compareTo(s2.name);
+
+Comparator<Student> byAge =
+    (s1, s2) -> s1.age - s2.age;
+```
+Sorting:
+```java
+Collections.sort(list, byName);
+```
+
+⸻
+
+### 🚀 6️⃣ Importance in Ordered Collections (TreeSet, TreeMap)
+
+TreeSet and TreeMap are sorted collections.
+
+They require ordering rules, which come from either:
+
+	1.	Comparable → natural ordering
+	2.	Comparator → custom ordering
+
+✔ Why important?
+
+Because ordering decides:
+
+	•	Where to place elements in a tree
+	•	How to maintain BST structure
+	•	Whether two elements are considered equal
+
+✔ EXAMPLE (SUPER IMPORTANT)
+
+### In TreeSet, equality is determined by compareTo() or compare(), NOT equals():
+
+Keep compareTo/compare consistent with equals when using sorted collections.
+
+```
+Consistency rule					If a.equals(b) is true, then a.compareTo(b) should return 0
+Why important						Otherwise, sorted collections may lose or skip elements
+```
+if (compare(x, y) == 0)
+
+    they are considered duplicate by TreeSet
+
+So:
+
+	•	CompareTo() or Comparator defines sorting
+	•	AND defines uniqueness
+
+⸻
+
+
+🚨 VERY IMPORTANT INTERVIEW POINT
+
+✔ HashSet uses equals() & hashCode() to detect duplicates
+
+✔ TreeSet uses compareTo() or compare() to detect duplicates
+
+Meaning:
+
+In TreeSet:
+
+compare(a, b) == 0  → duplicates!
+
+Even if equals() returns false.
+
+
+⸻
+
+⭐ 8️⃣ One-Line Interview Summary
+
+Use Comparable for natural ordering defined inside a class; use Comparator for custom or multiple sorting outside the class.
+Ordered collections like TreeSet and TreeMap rely entirely on Comparable/Comparator for sorting and determining duplicates.
+
+⸻
+
+# Thread safety in java collections
+
+Normal collections like ArrayList, HashMap, and HashSet are not thread-safe, so multiple threads modifying them can corrupt data.
+
+Java provides synchronized versions (like Vector, Hashtable, and Collections.synchronizedList()),
+
+which make them thread-safe by locking the entire data structure, but this is slow due to full-object locking.
+
+To solve this, Java introduced concurrent collections (like ConcurrentHashMap, CopyOnWriteArrayList, ConcurrentLinkedQueue, and BlockingQueue),
+
+which provide thread safety using fine-grained locks or lock-free algorithms, making them safe and highly efficient in multi-threaded environments.
+```java
+List<Integer> list = new CopyOnWriteArrayList<>();
+Map<String, Integer> map = new ConcurrentHashMap<>()
+```
+
+# Fail fast vs Fail safe
+
+⭐ Fail-Fast vs Fail-Safe
+
+### ✅ Fail-Fast Iterator
+
+•	Found in normal collections like ArrayList, HashMap, HashSet.
+•	If the collection is structurally modified while iterating
+
+(add/remove outside iterator), it throws:
+
+ConcurrentModificationException (CME)
+
+•	Works on the original collection directly.
+•	Uses a variable called modCount to detect changes.
+Example (Fail-Fast):
+```java
+List<Integer> list = new ArrayList<>();
+for (Integer i : list) {
+    list.add(10);   // ❌ mod → CME
+}
+```
+⸻
+
+### ⭐ Fail-Safe Iterator
+
+•	Found in concurrent collections like:
+•	CopyOnWriteArrayList
+•	ConcurrentHashMap
+•	ConcurrentLinkedQueue
+•	Does NOT throw CME.
+•	Works on a separate cloned copy of the collection while iterating.
+•	Structural changes do not affect iteration.
+
+Example (Fail-Safe):
+```java
+CopyOnWriteArrayList<Integer> list = new CopyOnWriteArrayList<>();
+for (Integer i : list) {
+    list.add(10);   // ✔ No CME
+}
+```
+
+⭐ Summary
+
+Fail-Fast iterators throw ConcurrentModificationException if the collection is modified during iteration because they work on the original structure. Fail-Safe iterators do not throw exceptions because they work on a copy of the collection (like in ConcurrentHashMap or CopyOnWriteArrayList).
+
+
+Here is a clean, crisp, interview-ready brush-up on object creation for different types of classes — exactly the essentials with simple examples.
+
+⸻
+
+# Object Creation for Different Types of Classes
+
+We cover:
+
+1️⃣ Singleton Class
+2️⃣ Immutable Class
+3️⃣ Anonymous Class
+4️⃣ Inner Class
+5️⃣ Static Inner Class
+6️⃣ Nested Class
+7️⃣ Final Class
+
+⸻
+
+✅ 1️⃣ Singleton Class
+
+A Singleton class ensures only one object is ever created.
+
+Steps to Create Singleton
+
+1️⃣ Make constructor private
+
+2️⃣ Create a static instance inside the class
+
+3️⃣ Provide a public static method to return that instance
+
+⸻
+
+✅ 1️⃣ Normal Singleton (NOT Thread Safe)
+
+✔ Definition
+
+A simple singleton that ensures only one instance but breaks in multi-threading.
+
+✔ Code
+
+public class Singleton {
+    private static Singleton instance;
+
+    private Singleton() { }
+
+    public static Singleton getInstance() {
+        if (instance == null) {            // ❌ Not thread safe
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+
+✔ Issue
+
+If two threads call getInstance() at the same time → two instances can be created.
+
+⸻
+
+✅ 2️⃣ Thread-Safe Singleton (Synchronized Method)
+
+✔ Definition
+
+Synchronize getInstance() so only one thread enters at a time.
+
+✔ Code
+
+public class Singleton {
+    private static Singleton instance;
+
+    private Singleton() { }
+
+    public static synchronized Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+
+✔ Pros
+	•	100% thread-safe
+
+❌ Cons
+	•	Slow — every call to getInstance() acquires a lock
+	•	Unnecessary locking after object is created
+
+⸻
+
+✅ 3️⃣ Thread-Safe AND Fast (Double-Checked Locking + volatile)
+
+(Most common interview answer)
+
+✔ Definition
+
+Avoid locking once the instance is created → fast & thread-safe.
+
+✔ Code
+
+public class Singleton {
+    private static volatile Singleton instance; // volatile required!
+
+    private Singleton() { }
+
+    public static Singleton getInstance() {
+        if (instance == null) {                // First check (no lock)
+            synchronized (Singleton.class) {
+                if (instance == null) {        // Second check (with lock)
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+
+✔ Why volatile?
+
+Prevents instruction reordering — ensures the object is fully constructed before assignment.
+
+✔ Pros
+
+	•	Thread-safe
+	•	Fast after first initialization
+	•	Industry-standard answer
+
+⸻
+
+✅ 4️⃣ Best & Simplest: Enum Singleton (Recommended by Joshua Bloch)
+
+✔ Definition
+
+Enum guarantees one instance, thread safety, and protects from serialization attacks.
+
+✔ Code
+
+public enum Singleton {
+    INSTANCE;
+}
+
+✔ Usage
+
+Singleton obj = Singleton.INSTANCE;
+
+✔ Pros
+
+	•	Thread-safe automatically
+	•	Serialization-safe
+	•	Reflection-safe
+	•	Cleanest solution
+
+⸻
+
+✅ 2️⃣ Immutable Class
+
+✔ Definition
+
+A class whose state cannot change after creation.
+
+✔ How object is created?
+
+Simply using new or static factory method.
+
+✔ Example
+
+final class Employee {
+    private final String name;
+    Employee(String name) { this.name = name; }
+    public String getName() { return name; }
+}
+
+Employee e = new Employee("Akshith");
+
+✔ No setters
+✔ Fields are final
+✔ Object created normally
+
+⸻
+
+✅ 3️⃣ Anonymous Class
+
+✔ Definition
+
+A class without a name created on the spot.
+
+✔ Object Creation
+
+Created using new + interface/class.
+
+✔ Example
+
+Runnable r = new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("Running...");
+    }
+};
+
+Object is created immediately — no class name needed.
+
+⸻
+
+✅ 4️⃣ Inner Class (Non-static Inner Class)
+
+✔ Definition
+
+A class defined inside another class, requiring an instance of outer class.
+
+✔ Object Creation
+
+Outer outer = new Outer();
+Outer.Inner inner = outer.new Inner();
+
+✔ Important
+
+Cannot create inner class object without the outer class object.
+
+⸻
+
+✅ 5️⃣ Static Inner Class
+
+✔ Definition
+
+A static nested class inside another class.
+Does not require outer class object.
+
+✔ Object Creation
+
+Outer.StaticInner obj = new Outer.StaticInner();
+
+Looks like a nested top-level class.
+
+⸻
+
+✅ 6️⃣ Nested Class (General Term)
+
+A nested class means any class inside another class:
+	•	Static inner class
+	•	Non-static inner class
+	•	Anonymous class
+	•	Local class
+
+✔ Example of a Local Nested Class
+
+void method() {
+    class LocalClass { }
+    LocalClass obj = new LocalClass();
+}
+
+
+⸻
+
+✅ 7️⃣ Final Class
+
+✔ Definition
+
+A class that cannot be extended.
+
+✔ Object Creation
+
+Same as normal class — use new.
+
+✔ Example
+
+final class Vehicle { }
+
+Vehicle v = new Vehicle();   // valid
+
+Final only prevents subclassing — not object creation.
+
+⸻
+

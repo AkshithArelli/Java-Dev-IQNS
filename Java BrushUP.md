@@ -1,4 +1,4 @@
-# ✅ Object-Oriented Programming (OOP) — Brush-Up
+#  Object-Oriented Programming (OOP) — Brush-Up
 
 OOP is a programming paradigm that organizes code into objects — real-world entities that contain data (fields) and behavior (methods).
 
@@ -94,7 +94,7 @@ Here is a clean, crisp, interview-ready brush-up on Abstract Class vs Interface 
 
 ⸻
 
-# 🔥 ABSTRACT CLASS vs INTERFACE
+#  ABSTRACT CLASS vs INTERFACE
 
 1️⃣ Purpose
 
@@ -244,7 +244,7 @@ It is used only to mark a class with some metadata so that JVM or frameworks tre
 •	RandomAccess
 
 
-# 🔥 Java 8 Features 
+#  Java 8 Features 
 
 Java 8 introduced functional programming, streams, default methods, and new APIs.
 These features made Java more concise, expressive, and parallel-friendly.
@@ -420,7 +420,7 @@ list.parallelStream().forEach(System.out::println);
 ```
  Can speed up CPU-intensive tasks
 
-❌ Not recommended for shared mutable data
+ Not recommended for shared mutable data
 
 ⸻
 
@@ -432,7 +432,7 @@ A JavaScript engine added in Java 8 (deprecated later).
 
 # Consumer, Supplier and Predicate
 
-### 🔥 1. Consumer — Takes input, returns nothing
+###  1. Consumer — Takes input, returns nothing
 
  Definition:
 
@@ -453,7 +453,7 @@ list.forEach(s -> System.out.println(s));
 
 ⸻
 
-### 🔥 2. Supplier — Provides output, takes nothing
+###  2. Supplier — Provides output, takes nothing
 
  Definition:
 
@@ -474,7 +474,7 @@ Supplier<String> getName = () -> "Akshith";
 
 ⸻
 
-### 🔥 3. Predicate — Takes input, returns boolean
+###  3. Predicate — Takes input, returns boolean
 
  Definition:
 
@@ -495,7 +495,7 @@ System.out.println(isEven.test(10)); // true
 
 # Default & Static Methods in Interfaces
 
-🔥 Default & Static Methods in Interfaces — Brush-Up
+ Default & Static Methods in Interfaces — Brush-Up
 
 Before Java 8, interfaces could only contain abstract methods (and constants).
 
@@ -541,7 +541,7 @@ new Car().start();  // Vehicle starting...
 
 ⸻
 
-## ⭐ Default Method Conflict (Important Interview Point)
+##  Default Method Conflict (Important Interview Point)
 
 If a class implements two interfaces with same default method → conflict occurs.
 ```java
@@ -577,10 +577,10 @@ interface Utils {
 ```java
 Utils.log("Hello");
 ```
-❌ You cannot call a static interface method on an object:
+ You cannot call a static interface method on an object:
 ```java
 Utils obj = new UtilsImpl();
-obj.log("Hi"); // ❌ Not allowed
+obj.log("Hi"); //  Not allowed
 ```
  Why Static Methods?
 
@@ -904,13 +904,13 @@ class Address {
 
 # Multithreading
 
-### ✅ 1️⃣ Thread — Definition
+###  1️⃣ Thread — Definition
 
 A Thread is the smallest unit of execution in a program. Multiple threads allow parallelism.
 
 ⸻
 
-🚀 Why Threads?
+ Why Threads?
 
 	•	Perform multiple tasks simultaneously
 	•	Improve performance
@@ -919,7 +919,7 @@ A Thread is the smallest unit of execution in a program. Multiple threads allow 
 ⸻
 
 
-### ✅ 2️⃣ Thread Creation (Two Ways)
+###  2️⃣ Thread Creation (Two Ways)
 
 Method 1: Extending Thread class
 ```java
@@ -943,12 +943,12 @@ class MyTask implements Runnable {
 Thread t = new Thread(new MyTask());
 t.start();
 ```
-✔ Runnable is preferred because Java supports multiple interface inheritance, not multiple class inheritance.
+ Runnable is preferred because Java supports multiple interface inheritance, not multiple class inheritance.
 
 ⸻
 
 
-### ✅ 3️⃣ start() vs run()
+###  3️⃣ start() vs run()
 ```
 start()							run()
 Creates a new OS thread			Does NOT create a new thread
@@ -964,7 +964,7 @@ t.run();    // Same thread (main)
 
 ⸻
 
-### ✅ 4️⃣ Thread Life Cycle
+###  4️⃣ Thread Life Cycle
 
 NEW → RUNNABLE → RUNNING → BLOCKED/WAITING → TERMINATED
 
@@ -981,7 +981,7 @@ States:
 ```
 ⸻
 
-### ✅ 1️⃣ Synchronization
+###  1️⃣ Synchronization
 
 Definition
 
@@ -991,19 +991,19 @@ Synchronization ensures only one thread at a time can access shared resources, p
 
 Examples
 
-✔ Synchronized Method
+ Synchronized Method
 ```java
 public synchronized void increment() {
     count++;
 }
 ```
-✔ Synchronized Block (preferred)
+ Synchronized Block (preferred)
 ```
 synchronized (lock) {
     count++;
 }
 ```
-✔ Object-level Lock vs Class-level Lock
+ Object-level Lock vs Class-level Lock
 ```
 public synchronized void method() {} 
 // locks 'this' object
@@ -1014,20 +1014,20 @@ public static synchronized void method() {}
 
 ⸻
 
-### ✅ 6️⃣ wait(), notify(), notifyAll()
+###  6️⃣ wait(), notify(), notifyAll()
 
 Used for inter-thread communication, especially in producer–consumer.
 
-✔ wait()
+ wait()
 
 	•	Releases lock
 	•	Moves thread to WAITING state
 
-✔ notify()
+ notify()
 
 	•	Wakes one waiting thread
 
-✔ notifyAll()
+ notifyAll()
 
 	•	Wakes all waiting threads
 
@@ -1039,12 +1039,12 @@ synchronized (lock) {
     lock.notifyAll(); // wake all
 }
 ```
-✔ Must be called inside synchronized block
-✔ Used for coordination between threads
+ Must be called inside synchronized block
+ Used for coordination between threads
 
 ⸻
 
-### ✅ 7️⃣ volatile — Definition
+###  7️⃣ volatile — Definition
 
 volatile ensures visibility of changes across threads.
 
@@ -1067,7 +1067,7 @@ volatile DOES NOT:
 
 ⸻
 
-### ✅ 8️⃣ thread.join() — Definition
+###  8️⃣ thread.join() — Definition
 
 join() makes one thread wait until another thread completes execution.
 
@@ -1081,12 +1081,12 @@ t.start();
 t.join();  // main waits until t finishes
 System.out.println("Main continues");
 ```
-✔ Used when a task must finish before continuing
-✔ Useful in multi-thread pipelines
+ Used when a task must finish before continuing
+ Useful in multi-thread pipelines
 
 ⸻
 
-### ✅ 9️⃣ Thread Priority
+###  9️⃣ Thread Priority
 
 In Java:
 
@@ -1110,11 +1110,11 @@ Here is a clean, crisp, interview-ready brush-up on Synchronization, Deadlocks, 
 
 ⸻
 
-🚀 BRUSH-UP: SYNCHRONIZATION, DEADLOCK, REENTRANTLOCK
+ BRUSH-UP: SYNCHRONIZATION, DEADLOCK, REENTRANTLOCK
 
 ⸻
 
-# 🔥 Deadlock
+#  Deadlock
 
 Definition
 
@@ -1179,7 +1179,7 @@ Two threads locking in opposite order → deadlock.
 
 ### 🛡 Deadlock Prevention Techniques
 
-✔ 1. Lock Ordering (Most Common)
+ 1. Lock Ordering (Most Common)
 
 Always acquire locks in the same order everywhere.
 
@@ -1189,7 +1189,7 @@ synchronized(lock1) {
 
 ⸻
 
-✔ 2. Timeout using tryLock()
+ 2. Timeout using tryLock()
 
 If lock cannot be acquired → avoid waiting forever.
 
@@ -1202,14 +1202,14 @@ if (lock.tryLock(100, TimeUnit.MILLISECONDS)) {
 
 ⸻
 
-✔ 3. Avoid Nested Locks
+ 3. Avoid Nested Locks
 
 Break complex locking structures.
 Simplify critical sections.
 
 ⸻
 
-✔ 4. Use Higher Level Concurrency Tools
+ 4. Use Higher Level Concurrency Tools
 
 	•	Executors
 	•	Semaphores
@@ -1218,7 +1218,7 @@ Simplify critical sections.
 
 ⸻
 
-✔ 5. Using volatile + immutable objects
+ 5. Using volatile + immutable objects
 
 Reduces need for locking.
 
@@ -1245,11 +1245,11 @@ Why Needed?
 
 Key Features
 
-✔ 1. Reentrancy
+ 1. Reentrancy
 
 A thread holding a lock can acquire it again.
 
-✔ 2. tryLock()
+ 2. tryLock()
 
 Avoids blocking forever; useful to prevent deadlocks.
 
@@ -1257,17 +1257,17 @@ if (lock.tryLock()) {
     // acquired
 }
 
-✔ 3. tryLock(timeout, unit)
+ 3. tryLock(timeout, unit)
 
 Wait for limited time → timeout instead of deadlock.
 
-✔ 4. Interruptible Locks
+ 4. Interruptible Locks
 
 lock.lockInterruptibly();
 
 Useful when a waiting thread should be interruptible.
 
-✔ 5. Fairness Policy
+ 5. Fairness Policy
 
 ReentrantLock lock = new ReentrantLock(true); // fair mode
 
@@ -1320,7 +1320,7 @@ Structured in the same format you prefer.
 
 ⸻
 
-✅ 1️⃣ Definition
+ 1️⃣ Definition
 
 Runnable
 
@@ -1348,19 +1348,19 @@ Callable<Integer> task = () -> {
 ⸻
 
 
-# 🚀 Future vs CompletableFuture
+#  Future vs CompletableFuture
 
-✔ 1️⃣ Future
+ 1️⃣ Future
 
 Represents the result of an asynchronous computation, but is blocking and limited.
 
-✔ 2️⃣ CompletableFuture — Definition
+ 2️⃣ CompletableFuture — Definition
 
 An advanced async API that supports non-blocking, chaining, callbacks, combining tasks, and fully asynchronous pipelines.
 
 ⸻
 
-✔ Examples
+ Examples
 
 Future (Blocking)
 ```java
@@ -1382,13 +1382,13 @@ Pipeline explained:
 	•	thenApply → transform value
 	•	thenAccept → consume value
 
-✔ No blocking
+ No blocking
 
-✔ Runs asynchronously
+ Runs asynchronously
 
 ⸻
 
-✔ One-line Summary
+ One-line Summary
 
 Future is blocking and limited, while CompletableFuture supports async pipelines, chaining, combining tasks, and non-blocking programming.
 
@@ -1489,7 +1489,7 @@ Multiple threads can interleave → inconsistent results.
 
 ⸻
 
-🚀 Atomic Classes (Overview)
+ Atomic Classes (Overview)
 
 Popular classes:
 
@@ -1501,7 +1501,7 @@ Popular classes:
 
 ⸻
 
-🔥 AtomicInteger Example
+ AtomicInteger Example
 
 AtomicInteger count = new AtomicInteger(0);
 ```
@@ -1511,7 +1511,7 @@ count.addAndGet(5);
 ```
 These operations are atomic, no race conditions, no synchronized needed.
 
-🚀 volatile Example (Visibility Guarantee)
+ volatile Example (Visibility Guarantee)
 
 ```java
 volatile boolean flag = true;
@@ -1526,7 +1526,7 @@ Thread.sleep(1000);
 flag = false; // visible immediately to t
 ```
 
-### ✔ Difference
+###  Difference
 
 volatile prevents stale reads; atomic classes prevent race conditions.
 
@@ -1582,7 +1582,7 @@ Here is a clean, crisp, interview-ready quick brush-up on all four topics — in
 
 #  == vs .equals()
 
-✔ Definition
+ Definition
 
 ==
 
@@ -1594,7 +1594,7 @@ Compares content/logical equality (when overridden).
 
 ⸻
 
-✔ Key Points
+ Key Points
 ```
 Comparison				==								.equals()
 Primitives				Value comparison				Not used
@@ -1604,7 +1604,7 @@ Default 				equals (Object)	Same as ==		Must override for meaningful comparison
 
 ⸻
 
-✔ Example
+ Example
 ```java
 String s1 = new String("Java");
 String s2 = new String("Java");
@@ -1615,7 +1615,7 @@ s1.equals(s2);   // true (same content)
 
 ⸻
 
-⭐ One-line summary
+ One-line summary
 
 == checks reference equality; .equals() checks logical equality.
 
@@ -1623,7 +1623,7 @@ s1.equals(s2);   // true (same content)
 
 # Internal Working of HashMap
 
-✅ Definition
+ Definition
 
 HashMap stores key–value pairs in buckets using the key’s hashCode() to compute bucket index.
 
@@ -1687,9 +1687,9 @@ If none found → return null
 
 ### 3️⃣ Collision Handling (VERY IMPORTANT)
 
-✔ Java 7: LinkedList → O(n) in worst case
+ Java 7: LinkedList → O(n) in worst case
 
-✔ Java 8+:
+ Java 8+:
 
 	•	If bucket becomes too large (≥ 8 entries)
 	•	Converts list → Red-Black Tree
@@ -1721,7 +1721,7 @@ HashMap uses hashCode() to locate the bucket, and equals() to locate the exact k
 
 ⸻
 
-🧠 6️⃣ Simple Example to Remember
+ 6️⃣ Simple Example to Remember
 ```java
 HashMap<String, Integer> map = new HashMap<>();
 map.put("FB", 1);
@@ -1737,9 +1737,9 @@ Both "FB" and "Ea" have the same hashCode(), so:
 
 ⸻
 
-# 🚀 equals() and hashCode()
+#  equals() and hashCode()
 
-✔ Definition
+ Definition
 
 If two objects are equal using .equals(), they must have the same hashCode().
 
@@ -1755,13 +1755,13 @@ Here is a clean, crisp, interview-ready brush-up on the difference between HashM
 
 ⸻
 
-### ✅ 1️⃣ HashMap
+###  1️⃣ HashMap
 
-✔ Definition
+ Definition
 
 A non-thread-safe key–value map that allows one null key and multiple null values.
 
-✔ Key Points
+ Key Points
 
 	•	Not synchronized → not safe for multithreading
 	•	Fastest in single-thread use
@@ -1770,13 +1770,13 @@ A non-thread-safe key–value map that allows one null key and multiple null val
 
 ⸻
 
-### ✅ 2️⃣ Hashtable
+###  2️⃣ Hashtable
 
-✔ Definition
+ Definition
 
 A thread-safe map where all methods are synchronized, but very slow.
 
-✔ Key Points
+ Key Points
 
 	•	Entire table is locked → one thread at a time
 	•	Does not allow null key or null value
@@ -1785,17 +1785,17 @@ A thread-safe map where all methods are synchronized, but very slow.
 
 ⸻
 
-### ✅ 3️⃣ SynchronizedMap
+###  3️⃣ SynchronizedMap
 
 Created using:
 ```java
 Map m = Collections.synchronizedMap(new HashMap<>());
 ```
-✔ Definition
+ Definition
 
 A wrapper around HashMap where all methods are synchronized.
 
-✔ Key Points
+ Key Points
 	•	Behaves similar to Hashtable
 	•	Single lock for entire map
 	•	Safer but slow in multi-threaded scenarios
@@ -1803,13 +1803,13 @@ A wrapper around HashMap where all methods are synchronized.
 
 ⸻
 
-### ✅ 4️⃣ ConcurrentHashMap
+###  4️⃣ ConcurrentHashMap
 
-✔ Definition
+ Definition
 
 A high-performance thread-safe map using fine-grained locking and non-blocking operations (CAS).
 
-✔ Key Points
+ Key Points
 
 	•	No global lock → multiple threads can access the map simultaneously
 	•	Uses bucket-level locking (Java 7) or Node-level CAS + sparse locking (Java 8)
@@ -1819,7 +1819,7 @@ A high-performance thread-safe map using fine-grained locking and non-blocking o
 
 ⸻
 
-⭐ 5️⃣ One-line Interview Summary
+ 5️⃣ One-line Interview Summary
 
 HashMap is non-thread-safe, Hashtable & SynchronizedMap use full-locking (slow), while ConcurrentHashMap uses fine-grained locking/CAS for high-performance concurrent access.
 
@@ -1829,7 +1829,7 @@ HashMap is non-thread-safe, Hashtable & SynchronizedMap use full-locking (slow),
 
 ⸻
 
-✅ 1️⃣ Definitions
+ 1️⃣ Definitions
 
 ### Comparable
 
@@ -1841,7 +1841,7 @@ Used to define custom or multiple sorting orders. Written outside the class via 
 
 ⸻
 
-✅ 2️⃣ Method Difference
+ 2️⃣ Method Difference
 ```
 Interface	Method	Used For
 Comparable	int compareTo(T o)	Natural sorting
@@ -1850,9 +1850,9 @@ Comparator	int compare(T o1, T o2)	Custom sorting
 
 ⸻
 
-🚀 3️⃣ When to Use Which?
+ 3️⃣ When to Use Which?
 
-✔ Use Comparable when:
+ Use Comparable when:
 
 	•	The class has one natural sorting (e.g., sorting students by rollNo).
 	•	You want objects of the class to be sortable by default.
@@ -1864,7 +1864,7 @@ String, Integer, Double → all implement Comparable.
 
 ⸻
 
-✔ Use Comparator when:
+ Use Comparator when:
 ```
 	•	You want multiple sorting criteria.
 Example: Sort Students by name, then age, then marks.
@@ -1873,7 +1873,7 @@ Example: Sort Students by name, then age, then marks.
 ```
 ⸻
 
-🚀 4️⃣ Comparable Example (natural sorting)
+ 4️⃣ Comparable Example (natural sorting)
 ```java
 class Student implements Comparable<Student> {
     int id;
@@ -1892,7 +1892,7 @@ Collections.sort(list); // uses compareTo()
 
 ⸻
 
-🚀 5️⃣ Comparator Example (custom sorting)
+ 5️⃣ Comparator Example (custom sorting)
 ```java
 Comparator<Student> byName =
     (s1, s2) -> s1.name.compareTo(s2.name);
@@ -1907,7 +1907,7 @@ Collections.sort(list, byName);
 
 ⸻
 
-### 🚀 6️⃣ Importance in Ordered Collections (TreeSet, TreeMap)
+###  6️⃣ Importance in Ordered Collections (TreeSet, TreeMap)
 
 TreeSet and TreeMap are sorted collections.
 
@@ -1916,7 +1916,7 @@ They require ordering rules, which come from either:
 	1.	Comparable → natural ordering
 	2.	Comparator → custom ordering
 
-✔ Why important?
+ Why important?
 
 Because ordering decides:
 
@@ -1924,7 +1924,7 @@ Because ordering decides:
 	•	How to maintain BST structure
 	•	Whether two elements are considered equal
 
-✔ EXAMPLE (SUPER IMPORTANT)
+ EXAMPLE (SUPER IMPORTANT)
 
 ### In TreeSet, equality is determined by compareTo() or compare(), NOT equals():
 
@@ -1946,11 +1946,11 @@ So:
 ⸻
 
 
-🚨 VERY IMPORTANT INTERVIEW POINT
+ VERY IMPORTANT INTERVIEW POINT
 
-✔ HashSet uses equals() & hashCode() to detect duplicates
+ HashSet uses equals() & hashCode() to detect duplicates
 
-✔ TreeSet uses compareTo() or compare() to detect duplicates
+ TreeSet uses compareTo() or compare() to detect duplicates
 
 Meaning:
 
@@ -1963,7 +1963,7 @@ Even if equals() returns false.
 
 ⸻
 
-⭐ 8️⃣ One-Line Interview Summary
+ 8️⃣ One-Line Interview Summary
 
 Use Comparable for natural ordering defined inside a class; use Comparator for custom or multiple sorting outside the class.
 Ordered collections like TreeSet and TreeMap rely entirely on Comparable/Comparator for sorting and determining duplicates.
@@ -1988,30 +1988,32 @@ Map<String, Integer> map = new ConcurrentHashMap<>()
 
 # Fail fast vs Fail safe
 
-⭐ Fail-Fast vs Fail-Safe
+ Fail-Fast vs Fail-Safe
 
-### ✅ Fail-Fast Iterator
+###  Fail-Fast Iterator
 
 •	Found in normal collections like ArrayList, HashMap, HashSet.
+
 •	If the collection is structurally modified while iterating
 
 (add/remove outside iterator), it throws:
 
 ConcurrentModificationException (CME)
-
+```
 •	Works on the original collection directly.
 •	Uses a variable called modCount to detect changes.
+```
 Example (Fail-Fast):
 ```java
 List<Integer> list = new ArrayList<>();
 for (Integer i : list) {
-    list.add(10);   // ❌ mod → CME
+    list.add(10);   //  mod → CME
 }
 ```
 ⸻
 
-### ⭐ Fail-Safe Iterator
-
+###  Fail-Safe Iterator
+```
 •	Found in concurrent collections like:
 •	CopyOnWriteArrayList
 •	ConcurrentHashMap
@@ -2019,16 +2021,16 @@ for (Integer i : list) {
 •	Does NOT throw CME.
 •	Works on a separate cloned copy of the collection while iterating.
 •	Structural changes do not affect iteration.
-
+```
 Example (Fail-Safe):
 ```java
 CopyOnWriteArrayList<Integer> list = new CopyOnWriteArrayList<>();
 for (Integer i : list) {
-    list.add(10);   // ✔ No CME
+    list.add(10);   //  No CME
 }
 ```
 
-⭐ Summary
+ Summary
 
 Fail-Fast iterators throw ConcurrentModificationException if the collection is modified during iteration because they work on the original structure. Fail-Safe iterators do not throw exceptions because they work on a copy of the collection (like in ConcurrentHashMap or CopyOnWriteArrayList).
 
@@ -2051,7 +2053,7 @@ We cover:
 
 ⸻
 
-✅ 1️⃣ Singleton Class
+## 1️⃣ Singleton Class
 
 A Singleton class ensures only one object is ever created.
 
@@ -2065,41 +2067,41 @@ Steps to Create Singleton
 
 ⸻
 
-✅ 1️⃣ Normal Singleton (NOT Thread Safe)
+###  1️⃣ Normal Singleton (NOT Thread Safe)
 
-✔ Definition
+ Definition
 
 A simple singleton that ensures only one instance but breaks in multi-threading.
 
-✔ Code
-
+ Code
+```java
 public class Singleton {
     private static Singleton instance;
 
     private Singleton() { }
 
     public static Singleton getInstance() {
-        if (instance == null) {            // ❌ Not thread safe
+        if (instance == null) {            //  Not thread safe
             instance = new Singleton();
         }
         return instance;
     }
 }
-
-✔ Issue
+```
+ Issue
 
 If two threads call getInstance() at the same time → two instances can be created.
 
 ⸻
 
-✅ 2️⃣ Thread-Safe Singleton (Synchronized Method)
+###  2️⃣ Thread-Safe Singleton (Synchronized Method)
 
-✔ Definition
+ Definition
 
 Synchronize getInstance() so only one thread enters at a time.
 
-✔ Code
-
+ Code
+```java
 public class Singleton {
     private static Singleton instance;
 
@@ -2112,26 +2114,28 @@ public class Singleton {
         return instance;
     }
 }
+```
+ Pros
 
-✔ Pros
 	•	100% thread-safe
 
-❌ Cons
+ Cons
+
 	•	Slow — every call to getInstance() acquires a lock
 	•	Unnecessary locking after object is created
 
 ⸻
 
-✅ 3️⃣ Thread-Safe AND Fast (Double-Checked Locking + volatile)
+###  3️⃣ Thread-Safe AND Fast (Double-Checked Locking + volatile)
 
 (Most common interview answer)
 
-✔ Definition
+ Definition
 
 Avoid locking once the instance is created → fast & thread-safe.
 
-✔ Code
-
+ Code
+```java
 public class Singleton {
     private static volatile Singleton instance; // volatile required!
 
@@ -2148,12 +2152,12 @@ public class Singleton {
         return instance;
     }
 }
-
-✔ Why volatile?
+```
+ Why volatile?
 
 Prevents instruction reordering — ensures the object is fully constructed before assignment.
 
-✔ Pros
+ Pros
 
 	•	Thread-safe
 	•	Fast after first initialization
@@ -2161,23 +2165,23 @@ Prevents instruction reordering — ensures the object is fully constructed befo
 
 ⸻
 
-✅ 4️⃣ Best & Simplest: Enum Singleton (Recommended by Joshua Bloch)
+###  4️⃣ Best & Simplest: Enum Singleton (Recommended by Joshua Bloch)
 
-✔ Definition
+ Definition
 
 Enum guarantees one instance, thread safety, and protects from serialization attacks.
 
-✔ Code
-
+ Code
+```java
 public enum Singleton {
     INSTANCE;
 }
-
-✔ Usage
-
+```
+ Usage
+```java
 Singleton obj = Singleton.INSTANCE;
-
-✔ Pros
+```
+ Pros
 
 	•	Thread-safe automatically
 	•	Serialization-safe
@@ -2186,121 +2190,153 @@ Singleton obj = Singleton.INSTANCE;
 
 ⸻
 
-✅ 2️⃣ Immutable Class
+##  2️⃣ Immutable Class
 
-✔ Definition
+ Definition
 
 A class whose state cannot change after creation.
 
-✔ How object is created?
+ How object is created?
 
 Simply using new or static factory method.
 
-✔ Example
-
-final class Employee {
+ Example
+```java
+final class Person {
     private final String name;
-    Employee(String name) { this.name = name; }
-    public String getName() { return name; }
+    private final int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
 }
 
-Employee e = new Employee("Akshith");
+//Object Creation
 
-✔ No setters
-✔ Fields are final
-✔ Object created normally
+Person p = new Person("Alice", 25);
+```
+ No setters
+
+ Fields are final
+
+ Object created normally
 
 ⸻
 
-✅ 3️⃣ Anonymous Class
+##  3️⃣ Anonymous Class
 
-✔ Definition
+ Definition
 
 A class without a name created on the spot.
 
-✔ Object Creation
+ Object Creation
 
 Created using new + interface/class.
 
-✔ Example
+ new <interface/class>() { ... }
 
+ Example
+```java
 Runnable r = new Runnable() {
     @Override
     public void run() {
         System.out.println("Running...");
     }
 };
-
+```
 Object is created immediately — no class name needed.
 
 ⸻
 
-✅ 4️⃣ Inner Class (Non-static Inner Class)
+##  4️⃣ Inner Class (Non-static Inner Class)
 
-✔ Definition
+ Definition
 
 A class defined inside another class, requiring an instance of outer class.
 
-✔ Object Creation
+
+```java
+class Outer {
+    class Inner {
+        void show() { System.out.println("Inner"); }
+    }
+}
+
+// Object Creation
 
 Outer outer = new Outer();
 Outer.Inner inner = outer.new Inner();
-
-✔ Important
+```
+ Important
 
 Cannot create inner class object without the outer class object.
 
 ⸻
 
-✅ 5️⃣ Static Inner Class
+##  5️⃣ Static Inner Class
 
-✔ Definition
+ Definition
 
 A static nested class inside another class.
+
 Does not require outer class object.
 
-✔ Object Creation
 
+```java
+class Outer {
+    static class Inner {
+        void show() { System.out.println("Static Inner"); }
+    }
+}
+
+//Object Creation
 Outer.StaticInner obj = new Outer.StaticInner();
-
+```
 Looks like a nested top-level class.
 
 ⸻
 
-✅ 6️⃣ Nested Class (General Term)
+##  6️⃣ Nested Class (General Term)
 
 A nested class means any class inside another class:
+
 	•	Static inner class
 	•	Non-static inner class
 	•	Anonymous class
 	•	Local class
 
-✔ Example of a Local Nested Class
-
-void method() {
-    class LocalClass { }
-    LocalClass obj = new LocalClass();
+ Example of a Local Nested Class
+```java
+class A {
+    class B {}
 }
 
+Object Creation
+
+A a = new A();
+A.B b = a.new B();
+```
 
 ⸻
 
-✅ 7️⃣ Final Class
+##  7️⃣ Final Class
 
-✔ Definition
+ Definition
 
 A class that cannot be extended.
 
-✔ Object Creation
+ Object Creation
 
 Same as normal class — use new.
 
-✔ Example
-
-final class Vehicle { }
+ Example
+```java
+final class Vehicle { 
+}
 
 Vehicle v = new Vehicle();   // valid
-
+```
 Final only prevents subclassing — not object creation.
 
 ⸻

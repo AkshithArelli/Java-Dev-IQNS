@@ -51,7 +51,7 @@ A parent POM provided by Spring Boot that manages dependency versions and build 
   <artifactId>spring-boot-starter-web</artifactId>
 </dependency>
 //(no version needed)
-//Includes Spring MVC + Jackson + Tomcat
+//Includes Spring MVC + Jackson (java obj to json & json -> java obj(pojo)) + Tomcat
 
 <dependency>
   <artifactId>spring-boot-starter-actuator</artifactId>

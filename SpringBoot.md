@@ -304,3 +304,377 @@ Defines how many instances of a bean are created.
 @Scope("prototype")
 class MyBean {}
 ```
+
+**How a Spring Boot application starts**
+
+**What it is**
+Startup flow from `main()` method to a fully running application.
+
+**Important points**
+
+* Entry point → `SpringApplication.run()`
+* Creates IoC container (ApplicationContext)
+* Performs auto-configuration
+* Scans and creates beans
+* Starts embedded server
+* Application becomes ready
+
+**Flow (step-by-step)**
+
+1. **Main method runs**
+
+```java
+@SpringBootApplication
+public class App {
+    public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+    }
+}
+```
+
+2. **SpringApplication starts**
+
+* Bootstraps the app
+* Detects configuration (`@SpringBootApplication`)
+
+3. **Creates ApplicationContext**
+
+* IoC container initialized
+
+4. **Component Scan**
+
+* Finds `@Component`, `@Service`, `@Repository`, etc.
+
+5. **Auto-Configuration**
+
+* Configures beans based on dependencies (e.g., web → Tomcat)
+
+6. **Bean Creation & DI**
+
+* Beans created and dependencies injected
+
+7. **Embedded Server Starts**
+
+* Tomcat/Jetty starts (for web apps)
+
+8. **Application Ready**
+
+* Runs `CommandLineRunner` / `ApplicationRunner` if present
+
+**Example**
+
+```java
+@Component
+class MyRunner implements CommandLineRunner {
+    public void run(String... args) {
+        System.out.println("App started");
+    }
+}
+```
+
+**@SpringBootApplication**
+
+**What it is**
+A main annotation in Spring Boot that combines multiple configurations to bootstrap the application.
+
+**Important points**
+
+* It is a combination of 3 annotations:
+
+  * `@Configuration` → marks class as configuration (bean definitions)
+  * `@EnableAutoConfiguration` → enables auto setup based on dependencies
+  * `@ComponentScan` → scans for components in package
+
+* Placed on main class
+
+* Triggers full Spring Boot startup
+
+**Example**
+
+```java id="sb1">
+@SpringBootApplication
+public class App {
+    public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+    }
+}
+```
+
+→ This single annotation replaces manual configuration, component scanning, and auto-configuration setup
+
+**Auto-Configuration in Spring Boot**
+
+**What it is**
+Feature that automatically configures beans based on dependencies, classpath, and properties—so you don’t write manual config.
+
+**Important points**
+
+* Triggered by `@EnableAutoConfiguration` (inside `@SpringBootApplication`)
+* Uses **classpath detection** → checks which libraries are present
+* Uses **conditional annotations** → loads config only if conditions match
+* Reads configs from `META-INF/spring.factories` (or newer `AutoConfiguration.imports`)
+* Can be customized via `application.properties`
+
+**How it works (flow)**
+
+1. Spring Boot starts
+2. Checks dependencies (e.g., web, JPA, security)
+3. Loads matching auto-config classes
+4. Applies conditions like:
+
+   * `@ConditionalOnClass` → class exists
+   * `@ConditionalOnMissingBean` → bean not already defined
+5. Creates and registers beans
+
+**Example**
+
+* Add dependency:
+
+```xml id="ac1">
+spring-boot-starter-web
+```
+
+* What happens automatically:
+
+  * DispatcherServlet configured
+  * Embedded Tomcat started
+  * JSON converter (Jackson) configured
+
+👉 You didn’t write any config, but everything works
+
+**Override example**
+
+```java id="ac2">
+@Bean
+public ObjectMapper customMapper() {
+    return new ObjectMapper();
+}
+```
+
+→ Spring Boot backs off because `@ConditionalOnMissingBean` fails
+
+**@Primary vs @Qualifier**
+
+**What it is**
+Used to resolve multiple bean conflicts in Spring Framework.
+
+**Important points**
+
+* `@Primary` → default bean when multiple exist
+* `@Qualifier` → specify exact bean
+
+**Example**
+
+```java
+@Component
+@Primary
+class A implements Service {}
+
+@Component
+class B implements Service {}
+
+@Autowired
+Service s; // A injected
+
+@Autowired
+@Qualifier("b")
+Service s2; // B injected
+```
+
+---
+
+**@SpringBootApplication ( @Configuration, @EnableAutoConfiguration, @ComponentScan )**
+
+**What it is**
+Main annotation of Spring Boot combining 3.
+
+**Important points**
+
+* `@Configuration` → define beans
+* `@EnableAutoConfiguration` → auto setup
+* `@ComponentScan` → scan components
+
+**Example**
+
+```java
+@SpringBootApplication
+class App {}
+```
+
+---
+
+**@Configuration, @Component, @Service, @Repository**
+
+**What it is**
+Annotations to define beans in Spring Framework.
+
+**Important points**
+
+* `@Configuration` → config class with `@Bean` methods
+* `@Component` → generic bean
+* `@Service` → business logic (semantic)
+* `@Repository` → DAO + exception translation
+
+**Example**
+
+```java
+@Configuration
+class AppConfig {
+    @Bean
+    MyBean bean() { return new MyBean(); }
+}
+```
+
+---
+
+**@Controller vs @RestController**
+
+**What it is**
+Used in web layer.
+
+**Important points**
+
+* `@Controller` → returns view (HTML)
+* `@RestController` → returns JSON (API)
+* `@RestController = @Controller + @ResponseBody`
+
+**Example**
+
+```java
+@RestController
+class A {
+    @GetMapping("/hello")
+    String hi() { return "Hello"; }
+}
+```
+
+---
+
+**@RequestMapping, @GetMapping, @PostMapping, @PutMapping, @PatchMapping, @DeleteMapping**
+
+**What it is**
+Map HTTP requests to methods.
+
+**Important points**
+
+* `@RequestMapping` → generic
+* Others → specific HTTP methods
+
+**Example**
+
+```java
+@GetMapping("/users")
+public List<User> getUsers() {}
+```
+
+---
+
+**@RequestParam vs @PathVariable vs @RequestBody**
+
+**What it is**
+Ways to get data from request.
+
+**Important points**
+
+* `@RequestParam` → query params (`?id=1`)
+* `@PathVariable` → URL path (`/users/1`)
+* `@RequestBody` → request JSON
+
+**Example**
+
+```java
+@GetMapping("/users/{id}")
+public User get(@PathVariable int id) {}
+```
+
+---
+
+**@Entity, @Table, @Data**
+
+**What it is**
+Used in persistence.
+
+**Important points**
+
+* `@Entity` → marks JPA entity
+* `@Table` → map to DB table
+* `@Data` (Lombok) → getters/setters, etc.
+
+**Example**
+
+```java
+@Entity
+@Table(name="users")
+@Data
+class User {
+    int id;
+    String name;
+}
+```
+
+---
+
+**@Autowired vs @Inject**
+
+**What it is**
+Used for dependency injection.
+
+**Important points**
+
+* `@Autowired` → Spring-specific
+* `@Inject` → Java standard (JSR-330)
+* Both work same in Spring
+
+**Example**
+
+```java
+@Autowired
+Service s;
+```
+
+---
+
+**@Target & @Retention**
+
+**What it is**
+Meta-annotations to define custom annotations.
+
+**Important points**
+
+* `@Target` → where annotation can be used (class, method)
+* `@Retention` → lifecycle (SOURCE, CLASS, RUNTIME)
+
+**Example**
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@interface MyAnno {}
+```
+
+---
+
+**@Transactional**
+
+**What it is**
+Manages database transactions in Spring Framework.
+
+**Important points**
+
+* Starts transaction before method
+* Commits if success
+* Rolls back on runtime exception
+* Works via AOP (proxy)
+
+**Example**
+
+```java
+@Transactional
+public void transfer() {
+    debit();
+    credit();
+}
+```
+
+→ If any step fails, everything rolls back
+

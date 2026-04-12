@@ -557,69 +557,121 @@ class A {
 **@RequestMapping, @GetMapping, @PostMapping, @PutMapping, @PatchMapping, @DeleteMapping**
 
 **What it is**
-Map HTTP requests to methods.
+Annotations in Spring Framework used to map HTTP requests to controller methods.
 
 **Important points**
 
-* `@RequestMapping` → generic
-* Others → specific HTTP methods
-* `@GetMapping` → GET (read data) 
-* `@PostMapping` → POST (create data)
-* `@PutMapping` → PUT (update full resource)
-* `@PatchMapping` → PATCH (partial update)
-* `@DeleteMapping` → DELETE (remove data)
+* `@RequestMapping` → generic (can handle any HTTP method)
+* Others → shortcuts for specific HTTP methods:
+
+  * `@GetMapping` → GET (read data)
+  * `@PostMapping` → POST (create data)
+  * `@PutMapping` → PUT (update full resource)
+  * `@PatchMapping` → PATCH (partial update)
+  * `@DeleteMapping` → DELETE (remove data)
+* Can be used at class level + method level
+
+**Example**
+
+```java
+@RestController
+@RequestMapping("/users")
+class UserController {
+
+    @GetMapping
+    public List<User> getAll() {}
+
+    @PostMapping
+    public void create(@RequestBody User user) {}
+
+    @PutMapping("/{id}")
+    public void update(@PathVariable int id, @RequestBody User user) {}
+
+    @PatchMapping("/{id}")
+    public void partialUpdate(@PathVariable int id) {}
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable int id) {}
+}
+```
+
+👉 Key idea:
+These annotations map **HTTP methods → Java methods** for building REST APIs
+
+
+---
+**@RequestParam vs @PathVariable vs @RequestBody**
+
+**What it is**
+Different ways in Spring Framework to get data from an HTTP request.
+
+---
+
+**@RequestParam**
+
+**Important points**
+
+* Gets data from **query parameters** (`?id=1`)
+* Mostly used for filtering, optional values
 
 **Example**
 
 ```java
 @GetMapping("/users")
-public List<User> getUsers() {}
+public User getUser(@RequestParam int id) {}
 ```
+
+→ `/users?id=1`
 
 ---
 
-**@RequestParam vs @PathVariable vs @RequestBody**
-
-**What it is**
-Ways to get data from request.
+**@PathVariable**
 
 **Important points**
 
-* `@RequestParam` → query params (`?id=1`)
-* `@PathVariable` → URL path (`/users/1`)
-* `@RequestBody` → request JSON
+* Gets data from **URL path**
+* Used for identifying a specific resource
 
 **Example**
 
 ```java
 @GetMapping("/users/{id}")
-public User get(@PathVariable int id) {}
+public User getUser(@PathVariable int id) {}
 ```
+
+→ `/users/1`
 
 ---
 
-**@Entity, @Table, @Data**
-
-**What it is**
-Used in persistence.
+**@RequestBody**
 
 **Important points**
 
-* `@Entity` → marks JPA entity
-* `@Table` → map to DB table
-* `@Data` (Lombok) → getters/setters, etc.
+* Gets data from **request body (JSON)**
+* Used in POST/PUT APIs
 
 **Example**
 
 ```java
-@Entity
-@Table(name="users")
-@Data
-class User {
-    int id;
-    String name;
+@PostMapping("/users")
+public void createUser(@RequestBody User user) {}
+```
+
+→ Body:
+
+```json
+{
+  "name": "John"
 }
 ```
+
+---
+
+👉 Key idea:
+
+* `@RequestParam` → query
+* `@PathVariable` → URL
+* `@RequestBody` → JSON body
 
 ---
 
@@ -639,26 +691,6 @@ Used for dependency injection.
 ```java
 @Autowired
 Service s;
-```
-
----
-
-**@Target & @Retention**
-
-**What it is**
-Meta-annotations to define custom annotations.
-
-**Important points**
-
-* `@Target` → where annotation can be used (class, method)
-* `@Retention` → lifecycle (SOURCE, CLASS, RUNTIME)
-
-**Example**
-
-```java
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@interface MyAnno {}
 ```
 
 ---

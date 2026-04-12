@@ -89,9 +89,9 @@ Module in Spring Boot to monitor and manage application.
 
 **Example endpoints**
 
-* `/actuator/health` → app status
-* `/actuator/metrics` → performance data
-
+* `/actuator/health` → app status ("UP" or "DOWN" status)
+* `/actuator/metrics` → performance data (such as CPU, memory, or HTTP requests)
+* `/actuator/info` → (application name, version, and description)
 ---
 
 **Spring IoC Container**

@@ -33,13 +33,24 @@ Predefined dependency sets in Spring Boot that include everything needed for a f
 * Ensures compatible versions
 * Naming: `spring-boot-starter-*`
 
+**spring-boot-starter-parent**
+A parent POM provided by Spring Boot that manages dependency versions and build configuration for your project.
+
 **Example**
 
 ```xml id="9jf3kw">
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.x.x</version>
+</parent>
+//After this, you can add dependencies like:
+
 <dependency>
   <groupId>org.springframework.boot</groupId>
   <artifactId>spring-boot-starter-web</artifactId>
 </dependency>
+//(no version needed)
 //Includes Spring MVC + Jackson + Tomcat
 
 <dependency>

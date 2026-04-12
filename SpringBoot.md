@@ -940,26 +940,62 @@ How server handles client state in Spring Boot apps.
 **Circular Dependency**
 
 **What it is**
-When two beans depend on each other in Spring Framework.
+When two or more beans depend on each other in Spring Framework.
+
+---
 
 **Important points**
 
-* A → depends on B
-* B → depends on A
-* Causes startup failure (especially with constructor injection)
-* Avoid using better design
+* A depends on B, and B depends on A
+* Causes **startup failure** (especially with constructor injection)
+* Hard to manage and indicates bad design
+* Spring may allow it with field/setter injection (but not recommended)
+
+---
 
 **Example**
 
 ```java
+@Component
 class A {
-    A(B b) {}
+    private final B b;
+
+    public A(B b) {
+        this.b = b;
+    }
 }
 
+@Component
 class B {
-    B(A a) {}
+    private final A a;
+
+    public B(A a) {
+        this.a = a;
+    }
 }
 ```
+
+→  Fails due to circular dependency
+
+---
+
+**How to fix**
+
+* Redesign (best solution)
+* Use interface/third class
+* Use `@Lazy` (temporary workaround)
+
+**Example fix**
+
+```java
+@Component
+class B {
+    public B(@Lazy A a) {}
+}
+```
+
+ Key idea:
+Circular dependency = design problem → avoid it
 
 ---
 
@@ -1261,8 +1297,8 @@ Testing logic inside private methods (in Java / Spring Boot apps).
 
 **Important points**
 
-* ❌ Don’t test private methods directly (best practice)
-* ✅ Test through **public methods** that use them
+*  Don’t test private methods directly (best practice)
+*  Test through **public methods** that use them
 * If logic is complex → **move it to a separate class** and test that class
 * Reflection can be used, but **not recommended** (breaks encapsulation)
 

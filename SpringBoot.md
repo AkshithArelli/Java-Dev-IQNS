@@ -1,4 +1,4 @@
-**What is Spring Boot?**
+<img width="635" height="1715" alt="image" src="https://github.com/user-attachments/assets/da375eb3-e230-47cd-832a-f1e89d21b1bd" />**What is Spring Boot?**
 Spring Boot is an extension of the Spring Framework that makes it easy to build production-ready applications quickly with minimal configuration.
 
 **Important points**
@@ -452,7 +452,7 @@ class Runner implements CommandLineRunner {
 }
 ```
 
-👉 Key idea:
+ Key idea:
 Main → Context → Beans → Server → Ready → Shutdown
 
 ---
@@ -595,7 +595,7 @@ class UserController {
 }
 ```
 
-👉 Key idea:
+ Key idea:
 These annotations map **HTTP methods → Java methods** for building REST APIs
 
 
@@ -665,7 +665,7 @@ public void createUser(@RequestBody User user) {}
 
 ---
 
-👉 Key idea:
+ Key idea:
 
 * `@RequestParam` → query
 * `@PathVariable` → URL
@@ -786,7 +786,7 @@ class User {
 public void create(@Valid @RequestBody User user) {}
 ```
 
-👉 If request has:
+ If request has:
 
 ```json
 { "name": null, "email": "abc" }
@@ -836,10 +836,991 @@ class UserController {
 }
 ```
 
-👉 Behavior:
+ Behavior:
 
 * **Create API** → `name` required, `id` not required
 * **Update API** → `id` required, `name` optional
 
-👉 Key idea:
+ Key idea:
 `@Validated` lets you apply **different validation rules for different scenarios**
+
+
+---
+
+**REST API Principles & Best Practices**
+
+**What it is**
+Guidelines to design clean, scalable APIs using HTTP in Spring Boot.
+
+**Important points**
+
+* Use proper HTTP methods
+
+  * GET → read, POST → create, PUT → update, DELETE → remove
+* Resource-based URLs (nouns, not verbs)
+
+  * `/users` not `/getUsers`
+* Stateless → no server-side session
+* Use proper status codes
+
+  * 200, 201, 400, 404, 500
+* Versioning
+
+  * `/api/v1/users`
+* Consistent response format (JSON)
+* Pagination & filtering for large data
+
+**Example**
+
+```http
+GET /api/v1/users/1 → 200 OK
+POST /api/v1/users → 201 Created
+```
+
+---
+
+**Security in API Endpoints**
+
+**What it is**
+Protecting APIs from unauthorized access and attacks using Spring Security.
+
+**Important points**
+
+* Authentication → who are you? (JWT, OAuth2)
+* Authorization → what can you access? (roles/permissions)
+* Use HTTPS (encrypt data)
+* Input validation (prevent injection attacks)
+* Rate limiting (prevent abuse)
+* Use tokens instead of sessions (stateless APIs)
+
+**Example**
+
+```java id="g8o8fw"
+@PreAuthorize("hasRole('ADMIN')")
+@GetMapping("/admin")
+public String admin() {
+    return "Only admin";
+}
+```
+
+ Key idea:
+
+* REST → clean design
+* Security → protect access + data
+
+
+---
+
+**Stateless vs Stateful**
+
+**What it is**
+How server handles client state in Spring Boot apps.
+
+**Important points**
+
+* Stateless
+
+  * No client data stored on server
+  * Each request is independent
+  * Scalable (used in REST APIs)
+
+* Stateful
+
+  * Server stores client session/data
+  * Requests depend on previous state
+  * Less scalable
+
+**Example**
+
+* Stateless → JWT token sent in every request
+* Stateful → session stored on server after login
+
+---
+
+**Circular Dependency**
+
+**What it is**
+When two beans depend on each other in Spring Framework.
+
+**Important points**
+
+* A → depends on B
+* B → depends on A
+* Causes startup failure (especially with constructor injection)
+* Avoid using better design
+
+**Example**
+
+```java
+class A {
+    A(B b) {}
+}
+
+class B {
+    B(A a) {}
+}
+```
+
+---
+
+**Cohesion vs Coupling**
+
+**What it is**
+Design principles in software.
+
+**Important points**
+
+* Cohesion → how related responsibilities are within a class
+
+  * High cohesion = good
+
+* Coupling → dependency between classes
+
+  * Low coupling = good
+
+**Example**
+
+* High cohesion → UserService handles only user logic
+* Low coupling → UserService depends on interface, not implementation
+
+ Key idea:
+
+* High cohesion + low coupling = clean design
+
+---
+
+**Caching in Spring Boot**
+
+**What it is**
+Storing frequently used data in memory to avoid repeated computation or DB calls.
+
+**Important points**
+
+* Improves performance
+* Reduces DB load
+* Can use in-memory or distributed cache (like Redis)
+
+**Example**
+
+```java
+@Cacheable("users")
+public User getUser(int id) {
+    return userRepository.findById(id);
+}
+```
+
+→ First call → DB, next calls → cache
+
+---
+
+**Caching Annotations**
+
+**What it is**
+Annotations to control caching behavior.
+
+**Important points**
+
+* `@EnableCaching` → enables caching
+* `@Cacheable` → store result in cache
+* `@CacheEvict` → remove cache
+* `@CachePut` → update cache without skipping method
+
+**Example**
+
+```java
+@CacheEvict(value = "users", key = "#id")
+public void deleteUser(int id) {}
+```
+
+---
+
+**Cache Levels**
+
+**What it is**
+Where cache is stored.
+
+**Important points**
+
+* L1 (Local/In-memory)
+
+  * Inside application (e.g., ConcurrentHashMap)
+  * Fast but not shared
+
+* L2 (Distributed)
+
+  * External cache like Redis
+  * Shared across services
+
+* L3 (Database cache)
+
+  * DB-level caching (less common in Spring usage)
+
+**Example**
+
+* L1 → simple Spring cache
+* L2 → Spring + Redis
+
+ Key idea:
+Cache = faster reads, less DB load
+
+
+---
+
+**Trace ID & Span ID**
+
+**What it is**
+Used in distributed systems (microservices) to track a request across services using tools like Spring Cloud Sleuth.
+
+---
+
+**Important points**
+
+* **Trace ID**
+
+  * Unique ID for a **complete request flow**
+  * Same across all services involved
+  * Helps track end-to-end journey
+
+* **Span ID**
+
+  * Unique ID for a **single operation/service call**
+  * Changes at each step
+  * Represents a unit of work
+
+---
+
+**Example**
+
+* User calls API → Service A → Service B → DB
+
+```
+TraceId: 12345 (same everywhere)
+
+Service A → SpanId: A1  
+Service B → SpanId: B1  
+DB Call   → SpanId: C1
+```
+
+ Key idea:
+
+* Trace ID → whole journey
+* Span ID → individual steps inside journey
+
+
+---
+
+**Logging Levels**
+
+**What it is**
+Different levels to classify log messages in Spring Boot (uses logging frameworks like Logback).
+
+**Important points**
+
+* `TRACE` → very detailed (step-by-step, lowest level)
+* `DEBUG` → debugging info (variables, flow)
+* `INFO` → general app events (startup, requests)
+* `WARN` → something unexpected but not breaking
+* `ERROR` → failure or exception
+
+ Order (low → high severity):
+`TRACE < DEBUG < INFO < WARN < ERROR`
+
+---
+
+**Example**
+
+```java id="lq7m3y"
+private static final Logger log = LoggerFactory.getLogger(App.class);
+
+log.info("Application started");
+log.debug("User id: {}", id);
+log.error("Exception occurred", e);
+```
+
+ Key idea:
+Use lower levels for development, higher levels for production logs
+
+---
+
+**JUnit**
+
+**What it is**
+Testing framework for Java to write and run unit tests (commonly used with Spring Boot).
+
+**Important points**
+
+* Used to test methods independently
+* Assertions to validate results
+* Runs tests automatically
+
+**Example**
+
+```java
+@Test
+void testAdd() {
+    assertEquals(4, 2 + 2);
+}
+```
+
+---
+
+**@Mock, @InjectMocks, @Spy, @Test, @ExtendWith, @AssertEquals, @AssertNotNull, @verify(...)**
+
+**What it is**
+Annotations & methods used in JUnit + Mockito.
+
+**Important points**
+
+* `@Test` → marks test method
+* `@Mock` → creates fake object
+* `@InjectMocks` → injects mocks into class under test
+* `@Spy` → partial mock (real + mock)
+* `@ExtendWith(MockitoExtension.class)` → enable Mockito
+* `assertEquals`, `assertNotNull` → validate output
+* `verify(mock)` → check method calls
+
+**Example**
+
+```java
+@ExtendWith(MockitoExtension.class)
+class TestClass {
+
+    @Mock
+    Repo repo;
+
+    @InjectMocks
+    Service service;
+
+    @Test
+    void test() {
+        when(repo.get()).thenReturn("data");
+        assertEquals("data", service.call());
+        verify(repo).get();
+    }
+}
+```
+
+---
+
+**@Mock vs @Spy**
+
+**What it is**
+Types of test doubles.
+
+**Important points**
+
+* `@Mock`
+
+  * Fully fake object
+  * No real logic executed
+
+* `@Spy`
+
+  * Real object + can mock some methods
+  * Calls real methods unless mocked
+
+**Example**
+
+```java
+@Spy
+List<String> list = new ArrayList<>();
+```
+
+---
+
+**when(...).thenReturn(...), doNothing(), doThrow()**
+
+**What it is**
+Mockito stubbing behavior.
+
+**Important points**
+
+* `when().thenReturn()` → return value
+* `doNothing()` → for void methods
+* `doThrow()` → simulate exception
+
+**Example**
+
+```java
+when(repo.get()).thenReturn("data");
+
+doNothing().when(repo).save();
+
+doThrow(new RuntimeException())
+    .when(repo).delete();
+```
+
+---
+
+**How to test private methods**
+
+**What it is**
+Testing logic inside private methods (in Java / Spring Boot apps).
+
+---
+
+**Important points**
+
+* ❌ Don’t test private methods directly (best practice)
+* ✅ Test through **public methods** that use them
+* If logic is complex → **move it to a separate class** and test that class
+* Reflection can be used, but **not recommended** (breaks encapsulation)
+
+---
+
+**Example (recommended way)**
+
+```java id="x8x0d3"
+class Calculator {
+
+    public int add(int a, int b) {
+        return internalAdd(a, b); // private method
+    }
+
+    private int internalAdd(int a, int b) {
+        return a + b;
+    }
+}
+```
+
+```java id="fntw9g"
+@Test
+void testAdd() {
+    Calculator c = new Calculator();
+    assertEquals(5, c.add(2, 3)); // indirectly tests private method
+}
+```
+
+ Key idea:
+Test **behavior via public methods**, not private implementation details
+
+---
+
+**Swagger Annotations (OpenAPI)**
+
+**What it is**
+Annotations used to document REST APIs in Spring Boot (via Swagger/OpenAPI tools like springdoc).
+
+---
+
+**@Tag**
+
+**Important points**
+
+* Groups related APIs
+* Applied at controller level
+
+**Example**
+
+```java
+@Tag(name = "User APIs")
+@RestController
+class UserController {}
+```
+
+---
+
+**@Operation**
+
+**Important points**
+
+* Describes a specific API method
+* Adds summary/description
+
+**Example**
+
+```java
+@Operation(summary = "Get user by id")
+@GetMapping("/users/{id}")
+public User getUser() {}
+```
+
+---
+
+**@ApiResponse**
+
+**Important points**
+
+* Defines possible responses
+* Helps document status codes
+
+**Example**
+
+```java
+@ApiResponse(responseCode = "200", description = "Success")
+@ApiResponse(responseCode = "404", description = "User not found")
+```
+
+---
+
+**@Parameter**
+
+**Important points**
+
+* Describes request parameters
+* Used for query/path params
+
+**Example**
+
+```java
+@GetMapping("/users")
+public User getUser(
+    @Parameter(description = "User ID") @RequestParam int id) {}
+```
+
+---
+
+**@Schema**
+
+**Important points**
+
+* Describes model (DTO/entity fields)
+* Adds field-level documentation
+
+**Example**
+
+```java
+class User {
+    @Schema(description = "User name")
+    String name;
+}
+```
+
+---
+
+**@Deprecated**
+
+**Important points**
+
+* Marks API as outdated
+* Indicates it should not be used
+
+**Example**
+
+```java
+@Deprecated
+@GetMapping("/old-api")
+public void oldMethod() {}
+```
+
+ Key idea:
+Swagger annotations = **API documentation + clarity for consumers**
+
+---
+
+**Spring Scheduler**
+
+**What it is**
+Feature in Spring Boot to run tasks automatically at fixed intervals or time.
+
+---
+
+**@EnableScheduling, @Scheduled(cron), @SchedulerLock**
+
+**Important points**
+
+* `@EnableScheduling` → enables scheduling in app
+* `@Scheduled(cron = "...")` → runs method based on cron expression
+* `@SchedulerLock` (from ShedLock) → ensures only one instance runs task in distributed systems
+
+**Example**
+
+```java id="n3jzv1"
+@EnableScheduling
+@SpringBootApplication
+class App {}
+
+@Scheduled(cron = "0 0/5 * * * ?") // every 5 mins
+@SchedulerLock(name = "job1")
+public void runJob() {
+    System.out.println("Running job");
+}
+```
+
+---
+
+**ShedLock - lockAtMostFor, lockAtLeastFor**
+
+**What it is**
+Configuration in ShedLock to control locking duration.
+
+**Important points**
+
+* `lockAtMostFor`
+
+  * Maximum time lock is held
+  * Prevents deadlock if app crashes
+
+* `lockAtLeastFor`
+
+  * Minimum time lock is held
+  * Prevents multiple executions too frequently
+
+**Example**
+
+```java id="iqizyo"
+@SchedulerLock(
+    name = "job1",
+    lockAtMostFor = "10m",
+    lockAtLeastFor = "1m"
+)
+```
+
+ Key idea:
+
+* Scheduler → run tasks automatically
+* ShedLock → avoid duplicate execution in multi-instance apps
+
+
+---
+
+**Spring Batch**
+
+**What it is**
+Framework in Spring Framework to process large volumes of data (batch processing like ETL, reports).
+
+---
+
+**Job, JobBuilderFactory**
+
+**What it is**
+
+* **Job** → complete batch process
+* **JobBuilderFactory** → used to create jobs
+
+**Important points**
+
+* Job = multiple steps
+* Has start → end flow
+
+**Example**
+
+```java
+Job job = jobBuilderFactory.get("job1")
+    .start(step1)
+    .build();
+```
+
+---
+
+**Step, StepBuilderFactory, ItemReader, ItemProcessor, ItemWriter**
+
+**What it is**
+
+* **Step** → single unit of work in a job
+* **StepBuilderFactory** → creates steps
+* **ItemReader** → reads data
+* **ItemProcessor** → processes/transforms
+* **ItemWriter** → writes data
+
+**Important points**
+
+* Works in chunk (read → process → write)
+* Core flow: Reader → Processor → Writer
+
+**Example**
+
+```java
+stepBuilderFactory.get("step1")
+    .<Input, Output>chunk(10)
+    .reader(reader)
+    .processor(processor)
+    .writer(writer)
+    .build();
+```
+
+---
+
+**JdbcCursorItemReader, JdbcBatchItemWriter**
+
+**What it is**
+JDBC-based implementations for DB operations.
+
+**Important points**
+
+* `JdbcCursorItemReader`
+
+  * Reads data row-by-row from DB
+  * Uses SQL query
+
+* `JdbcBatchItemWriter`
+
+  * Writes data in batch to DB
+  * Uses batch insert/update
+
+**Example**
+
+```java
+JdbcCursorItemReader<User> reader = new JdbcCursorItemReader<>();
+reader.setSql("SELECT * FROM users");
+
+JdbcBatchItemWriter<User> writer = new JdbcBatchItemWriter<>();
+```
+
+
+ Key idea:
+Job → Step → (Reader → Processor → Writer) → handle large data efficiently
+
+---
+
+**How to secure a Spring Boot application**
+
+**What it is**
+Protect APIs and data using authentication + authorization (commonly via Spring Security).
+
+**Important points**
+
+* **Authentication (who are you?)**
+
+  * JWT, OAuth2, Basic Auth
+* **Authorization (what can you access?)**
+
+  * Roles/permissions (`ADMIN`, `USER`)
+* **Use HTTPS**
+
+  * Encrypt data in transit
+* **Secure endpoints**
+
+  * Restrict access using config or annotations
+* **Input validation**
+
+  * Prevent attacks (SQL injection, etc.)
+* **CSRF protection**
+
+  * Needed for stateful apps
+* **Stateless APIs**
+
+  * Prefer JWT instead of sessions
+
+---
+
+**Example**
+
+```java id="9h3f7r"
+@PreAuthorize("hasRole('ADMIN')")
+@GetMapping("/admin")
+public String admin() {
+    return "secured";
+}
+```
+
+```java id="lzlpv7"
+@Bean
+SecurityFilterChain security(HttpSecurity http) throws Exception {
+    http
+      .authorizeHttpRequests(auth -> auth
+          .requestMatchers("/public/**").permitAll()
+          .anyRequest().authenticated()
+      )
+      .httpBasic();
+    return http.build();
+}
+```
+
+ Key idea:
+Authenticate user → authorize access → protect data & endpoints
+
+---
+
+**CommandLineRunner & ApplicationRunner**
+
+**What it is**
+Interfaces in Spring Boot used to run code **after application startup**.
+
+---
+
+**Important points**
+
+* Both run after Spring Boot fully starts
+* Used for initialization (load data, logs, setup)
+* Can have multiple runners (ordered with `@Order`)
+
+---
+
+**CommandLineRunner**
+
+**Important points**
+
+* Takes arguments as `String... args`
+* Simple and commonly used
+
+**Example**
+
+```java
+@Component
+class MyRunner implements CommandLineRunner {
+    public void run(String... args) {
+        System.out.println("App started with args");
+    }
+}
+```
+
+---
+
+**ApplicationRunner**
+
+**Important points**
+
+* Takes `ApplicationArguments` (more structured)
+* Can access option/non-option args
+
+**Example**
+
+```java
+@Component
+class MyAppRunner implements ApplicationRunner {
+    public void run(ApplicationArguments args) {
+        System.out.println(args.getOptionNames());
+    }
+}
+```
+
+ Key idea:
+
+* Both run after startup
+* `CommandLineRunner` → simple
+* `ApplicationRunner` → advanced argument handling
+
+---
+
+**How to package a Spring Boot application**
+
+**What it is**
+Process of building your app into a runnable **JAR/WAR file** for deployment.
+
+---
+
+**Important points**
+
+* Use build tools: **Maven / Gradle**
+* Default packaging → **executable JAR** (preferred)
+* Includes:
+
+  * Application code
+  * Dependencies
+  * Embedded server (Tomcat)
+
+---
+
+**Maven (most common)**
+
+**Steps**
+
+1. Add plugin
+
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-maven-plugin</artifactId>
+    </plugin>
+  </plugins>
+</build>
+```
+
+2. Build command
+
+```bash
+mvn clean package
+```
+
+3. Run
+
+```bash
+java -jar target/app.jar
+```
+
+---
+
+**WAR packaging (less used)**
+
+**Important points**
+
+* Used if deploying to external server (Tomcat)
+* Change packaging to `war`
+
+ Key idea:
+Spring Boot → package as **fat JAR** → run anywhere with `java -jar`
+
+---
+
+
+**REST Controller implementation**
+```java
+package com.practise.demo.streams;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    private Map<Long, String> users = new HashMap<>();
+
+    // 🔹 GET - Fetch all users
+    @GetMapping
+    public ResponseEntity<List<String>> getAllUsers() {
+        return ResponseEntity.ok(new ArrayList<>(users.values()));
+    }
+
+    // 🔹 GET - Fetch user by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<String> getUserById(@PathVariable Long id) {
+        if (!users.containsKey(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(users.get(id));
+    }
+
+    // 🔹 POST - Create new user
+    @PostMapping
+    public ResponseEntity<String> createUser(@RequestBody String name) {
+        Long id = (long) (users.size() + 1);
+        users.put(id, name);
+        return ResponseEntity.ok("User created with ID: " + id);
+    }
+
+    // 🔹 PUT - Full update (replace user)
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateUser(
+            @PathVariable Long id,
+            @RequestBody String name) {
+
+        if (!users.containsKey(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        users.put(id, name);
+        return ResponseEntity.ok("User updated successfully");
+    }
+
+    // 🔹 PATCH - Partial update
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> patchUser(
+            @PathVariable Long id,
+            @RequestBody String name) {
+
+        if (!users.containsKey(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        users.put(id, name); // simplified partial update
+        return ResponseEntity.ok("User partially updated");
+    }
+
+    // 🔹 DELETE - Remove user
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        if (!users.containsKey(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        users.remove(id);
+        return ResponseEntity.ok("User deleted successfully");
+    }
+}
+```

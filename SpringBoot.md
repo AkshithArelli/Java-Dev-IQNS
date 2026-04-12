@@ -377,58 +377,6 @@ class MyService {}
 
 → Automatically detected and registered as bean
 
----
-
-**Auto-Configuration in Spring Boot**
-
-**What it is**
-Feature that automatically configures beans based on dependencies, classpath, and properties—so you don’t write manual config.
-
-**Important points**
-
-* Triggered by `@EnableAutoConfiguration` (inside `@SpringBootApplication`)
-* Uses **classpath detection** → checks which libraries are present
-* Uses **conditional annotations** → loads config only if conditions match
-* Reads configs from `META-INF/spring.factories` (or newer `AutoConfiguration.imports`)
-* Can be customized via `application.properties`
-
-**How it works (flow)**
-
-1. Spring Boot starts
-2. Checks dependencies (e.g., web, JPA, security)
-3. Loads matching auto-config classes
-4. Applies conditions like:
-
-   * `@ConditionalOnClass` → class exists
-   * `@ConditionalOnMissingBean` → bean not already defined
-5. Creates and registers beans
-
-**Example**
-
-* Add dependency:
-
-```xml id="ac1">
-spring-boot-starter-web
-```
-
-* What happens automatically:
-
-  * DispatcherServlet configured
-  * Embedded Tomcat started
-  * JSON converter (Jackson) configured
-
-👉 You didn’t write any config, but everything works
-
-**Override example**
-
-```java id="ac2">
-@Bean
-public ObjectMapper customMapper() {
-    return new ObjectMapper();
-}
-```
-
-→ Spring Boot backs off because `@ConditionalOnMissingBean` fails
 
 ---
 

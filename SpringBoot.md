@@ -563,6 +563,11 @@ Map HTTP requests to methods.
 
 * `@RequestMapping` → generic
 * Others → specific HTTP methods
+* `@GetMapping` → GET (read data) 
+* `@PostMapping` → POST (create data)
+* `@PutMapping` → PUT (update full resource)
+* `@PatchMapping` → PATCH (partial update)
+* `@DeleteMapping` → DELETE (remove data)
 
 **Example**
 

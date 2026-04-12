@@ -717,3 +717,129 @@ public void transfer() {
 
 → If any step fails, everything rolls back
 
+---
+
+**Profiles in Spring Boot**
+
+**What it is**
+Way to run application with different configurations (dev, test, prod).
+
+**Important points**
+
+* Use `@Profile` to load beans conditionally
+* Activate using `spring.profiles.active`
+* Separate config files: `application-dev.properties`, etc.
+
+**Example**
+
+```java
+@Component
+@Profile("dev")
+class DevService {}
+```
+
+```properties
+spring.profiles.active=dev
+```
+
+---
+
+**@Valid vs @Validated**
+
+**What it is**
+Used for validation in Spring Framework.
+
+**Important points**
+
+* `@Valid` → standard Java (JSR-380), basic validation
+* `@Validated` → Spring-specific, supports **validation groups (different rules for different operations)**
+
+
+`@Valid` / `@Validated` only **trigger validation**. Actual rules must be defined inside the class.
+
+**Important points**
+
+* Without validation annotations → nothing happens
+* You must use annotations like:
+
+  * `@NotNull`
+  * `@NotBlank`
+  * `@Size`
+  * `@Email`
+* These come from validation API used by Spring Framework
+
+**@Valid Example**
+
+```java
+class User {
+
+    @NotNull
+    private String name;
+
+    @Email
+    private String email;
+}
+```
+
+```java
+@PostMapping
+public void create(@Valid @RequestBody User user) {}
+```
+
+👉 If request has:
+
+```json
+{ "name": null, "email": "abc" }
+```
+
+→ validation fails automatically
+
+**@Validated Example**
+
+**Important points**
+
+* Define **groups (interfaces)**
+* Apply validation conditionally
+* Use `@Validated(Group.class)`
+
+
+**Example**
+
+```java
+// 1. Define groups
+interface Create {}
+interface Update {}
+```
+
+```java
+// 2. Apply validations with groups
+class User {
+
+    @NotNull(groups = Update.class)   // required only for update
+    private Long id;
+
+    @NotBlank(groups = {Create.class}) // required only for create
+    private String name;
+}
+```
+
+```java
+// 3. Use in controller/service
+@RestController
+class UserController {
+
+    @PostMapping("/users")
+    public void create(@RequestBody @Validated(Create.class) User user) {}
+
+    @PutMapping("/users")
+    public void update(@RequestBody @Validated(Update.class) User user) {}
+}
+```
+
+👉 Behavior:
+
+* **Create API** → `name` required, `id` not required
+* **Update API** → `id` required, `name` optional
+
+👉 Key idea:
+`@Validated` lets you apply **different validation rules for different scenarios**

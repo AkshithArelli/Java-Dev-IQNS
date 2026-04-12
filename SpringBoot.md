@@ -3,10 +3,11 @@ Spring Boot is an extension of the Spring Framework that makes it easy to build 
 
 **Important points**
 
-* Auto-configuration (no need to write lots of XML/config)
-* Embedded servers (Tomcat/Jetty → no external server setup)
-* Opinionated defaults (pre-configured setup)
-* Runs as standalone app (just `main()` method)
+* Auto-configuration (based on classpath)
+* Embedded server (Tomcat/Jetty)
+* Starter dependencies (no version conflicts)
+* Production-ready features (metrics, health)
+* Minimal setup (no XML)
 
 **Example**
 
@@ -18,59 +19,6 @@ public class App {
     }
 }
 ```
-
----
-
-**Difference between Spring Boot and Spring Framework**
-
-**What it is**
-
-* Spring Framework → Core framework (DI, AOP, MVC, etc.)
-* Spring Boot → Tool built on top of Spring to simplify development
-
-**Important differences**
-
-* Configuration
-
-  * Spring: manual + XML/Java config
-  * Boot: auto-configuration
-
-* Setup
-
-  * Spring: need to set up server, dependencies manually
-  * Boot: embedded server + starter dependencies
-
-* Development speed
-
-  * Spring: slower setup
-  * Boot: very fast
-
-* Use case
-
-  * Spring: flexible, low-level control
-  * Boot: quick microservices / REST APIs
-
-**Example difference**
-
-* Spring: configure dispatcher servlet, view resolver manually
-* Boot: just add dependency → it auto configures everything
-
-
-**Spring Boot Features**
-
-**What it is**
-Key capabilities provided by Spring Boot to simplify development.
-
-**Important points**
-
-* Auto-configuration (based on classpath)
-* Embedded server (Tomcat/Jetty)
-* Starter dependencies (no version conflicts)
-* Production-ready features (metrics, health)
-* Minimal setup (no XML)
-
-**Example**
-Add dependency → REST API works without manual config.
 
 ---
 

@@ -605,8 +605,6 @@ These annotations map **HTTP methods → Java methods** for building REST APIs
 **What it is**
 Different ways in Spring Framework to get data from an HTTP request.
 
----
-
 **@RequestParam**
 
 **Important points**

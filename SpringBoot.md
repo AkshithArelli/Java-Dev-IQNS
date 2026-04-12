@@ -25,7 +25,7 @@ public class App {
 **Spring Boot Starters**
 
 **What it is**
-Predefined dependency bundles in Spring Boot for specific use cases.
+Predefined dependency sets in Spring Boot that include everything needed for a feature.
 
 **Important points**
 
@@ -40,10 +40,40 @@ Predefined dependency bundles in Spring Boot for specific use cases.
   <groupId>org.springframework.boot</groupId>
   <artifactId>spring-boot-starter-web</artifactId>
 </dependency>
+//Includes Spring MVC + Jackson + Tomcat
+
+<dependency>
+  <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+//Health checks + Metrics endpoints
+
+<dependency>
+  <artifactId>spring-boot-starter-data-mongodb</artifactId>
+</dependency>
+//Spring Data MongoDB -> java objects to mongo documents, provides few built in queries
+//MongoDB Java Driver -> connection
+
+<dependency>
+  <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+//Hibernate Validator + Bean Validation (JSR-380)
+
+
+<dependency>
+  <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+//Database + ORM
+
+<dependency>
+  <artifactId>spring-boot-starter-test</artifactId>
+</dependency>
+//JUnit + Mockito + Spring Test
+
+<dependency>
+  <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+//Authentication & authorization
 ```
-
-→ Includes Spring MVC + Jackson + Tomcat
-
 ---
 
 **Actuator & Endpoints**

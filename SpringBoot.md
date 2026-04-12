@@ -103,6 +103,7 @@ Module in Spring Boot to monitor and manage application.
 * `/actuator/health` → app status ("UP" or "DOWN" status)
 * `/actuator/metrics` → performance data (such as CPU, memory, or HTTP requests)
 * `/actuator/info` → (application name, version, and description)
+  
 ---
 
 **Spring IoC Container**
@@ -131,6 +132,8 @@ class B {
 
 → Container creates A and injects into B automatically
 
+---
+
 **Dependency Injection (DI)**
 
 **What it is**
@@ -143,7 +146,6 @@ A concept in Spring Framework where dependencies are provided by the container i
 * Improves testability and flexibility
 * Main types: Constructor, Setter, Field
 
----
 
 **1. Constructor Injection**
 
@@ -173,7 +175,6 @@ class Car {
 }
 ```
 
----
 
 **2. Setter Injection**
 
@@ -199,7 +200,6 @@ class Car {
 }
 ```
 
----
 
 **3. Field Injection**
 
@@ -221,6 +221,8 @@ class Car {
 }
 ```
 
+---
+
 **Bean**
 
 **What it is**
@@ -238,8 +240,6 @@ An object managed by the Spring Framework IoC container.
 @Component
 class MyService {}
 ```
-
----
 
 **Bean Lifecycle**
 
@@ -272,8 +272,6 @@ class MyBean {
 }
 ```
 
----
-
 **Bean Scopes**
 
 **What it is**
@@ -294,102 +292,92 @@ Defines how many instances of a bean are created.
 class MyBean {}
 ```
 
-**How a Spring Boot application starts**
+---
+
+**@SpringBootApplication**
 
 **What it is**
-Startup flow from `main()` method to a fully running application.
+Main annotation in Spring Boot that bootstraps the application by combining 3 core configurations.
 
 **Important points**
 
-* Entry point → `SpringApplication.run()`
-* Creates IoC container (ApplicationContext)
-* Performs auto-configuration
-* Scans and creates beans
-* Starts embedded server
-* Application becomes ready
+* Used on main class
+* Triggers auto-configuration + component scanning + config setup
+* Equivalent to 3 annotations together
 
-**Flow (step-by-step)**
-
-1. **Main method runs**
+**Example**
 
 ```java
 @SpringBootApplication
-public class App {
+class App {
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
     }
 }
 ```
 
-2. **SpringApplication starts**
+**1. @Configuration**
 
-* Bootstraps the app
-* Detects configuration (`@SpringBootApplication`)
+**What it is**
+Marks class as a configuration class (like XML config replacement).
 
-3. **Creates ApplicationContext**
+**Important points**
 
-* IoC container initialized
+* Used to define beans using `@Bean`
+* Managed by Spring container
 
-4. **Component Scan**
+**Example**
 
-* Finds `@Component`, `@Service`, `@Repository`, etc.
+```java
+@Configuration
+class AppConfig {
+    @Bean
+    MyService myService() {
+        return new MyService();
+    }
+}
+```
 
-5. **Auto-Configuration**
+**2. @EnableAutoConfiguration**
 
-* Configures beans based on dependencies (e.g., web → Tomcat)
+**What it is**
+Enables automatic configuration based on dependencies.
 
-6. **Bean Creation & DI**
+**Important points**
 
-* Beans created and dependencies injected
+* Checks classpath (what libraries are present)
+* Uses conditions (`@ConditionalOnClass`, etc.)
+* Automatically creates required beans
 
-7. **Embedded Server Starts**
+**Example**
 
-* Tomcat/Jetty starts (for web apps)
+* Add `spring-boot-starter-web`
+  → Spring auto-configures:
 
-8. **Application Ready**
+  * DispatcherServlet
+  * Tomcat
+  * JSON converter
 
-* Runs `CommandLineRunner` / `ApplicationRunner` if present
+**3. @ComponentScan**
+
+**What it is**
+Scans packages to find Spring components.
+
+**Important points**
+
+* Looks for `@Component`, `@Service`, `@Repository`, `@Controller`
+* Default: scans current package + sub-packages
 
 **Example**
 
 ```java
 @Component
-class MyRunner implements CommandLineRunner {
-    public void run(String... args) {
-        System.out.println("App started");
-    }
-}
+class MyService {}
 ```
 
-**@SpringBootApplication**
+→ Automatically detected and registered as bean
 
-**What it is**
-A main annotation in Spring Boot that combines multiple configurations to bootstrap the application.
-
-**Important points**
-
-* It is a combination of 3 annotations:
-
-  * `@Configuration` → marks class as configuration (bean definitions)
-  * `@EnableAutoConfiguration` → enables auto setup based on dependencies
-  * `@ComponentScan` → scans for components in package
-
-* Placed on main class
-
-* Triggers full Spring Boot startup
-
-**Example**
-
-```java id="sb1">
-@SpringBootApplication
-public class App {
-    public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
-    }
-}
-```
-
-→ This single annotation replaces manual configuration, component scanning, and auto-configuration setup
+---
 
 **Auto-Configuration in Spring Boot**
 
@@ -441,6 +429,85 @@ public ObjectMapper customMapper() {
 ```
 
 → Spring Boot backs off because `@ConditionalOnMissingBean` fails
+
+---
+
+**Spring Boot Application Lifecycle**
+
+**What it is**
+The sequence of steps from starting a Spring Boot app to shutdown.
+
+Startup flow from `main()` method to a fully running application.
+
+**Important points (flow)**
+
+1. **Main method**
+
+```java
+SpringApplication.run(App.class, args);
+```
+
+2. **SpringApplication initialization**
+
+* Prepares environment
+* Reads configs (`application.properties`)
+
+3. **Environment prepared**
+
+* Profiles, properties loaded
+
+4. **ApplicationContext creation**
+
+* IoC container created
+
+5. **Component Scan**
+
+* Finds beans (`@Component`, `@Service`, etc.)
+
+6. **Auto-Configuration**
+
+* Configures beans based on dependencies
+
+7. **Bean creation & DI**
+
+* Beans instantiated and dependencies injected
+
+8. **Bean lifecycle callbacks**
+
+* `@PostConstruct` executed
+
+9. **Embedded server start**
+
+* Tomcat/Jetty starts (for web apps)
+
+10. **Application ready**
+
+* `CommandLineRunner` / `ApplicationRunner` executed
+
+11. **Application running**
+
+* Ready to serve requests
+
+12. **Shutdown**
+
+* `@PreDestroy` called
+* Context closed
+
+**Example**
+
+```java
+@Component
+class Runner implements CommandLineRunner {
+    public void run(String... args) {
+        System.out.println("App started");
+    }
+}
+```
+
+👉 Key idea:
+Main → Context → Beans → Server → Ready → Shutdown
+
+---
 
 **@Primary vs @Qualifier**
 

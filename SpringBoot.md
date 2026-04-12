@@ -1,4 +1,4 @@
-<img width="635" height="1715" alt="image" src="https://github.com/user-attachments/assets/da375eb3-e230-47cd-832a-f1e89d21b1bd" />**What is Spring Boot?**
+**What is Spring Boot?**
 Spring Boot is an extension of the Spring Framework that makes it easy to build production-ready applications quickly with minimal configuration.
 
 **Important points**

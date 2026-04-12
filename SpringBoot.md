@@ -914,26 +914,58 @@ public String admin() {
 **Stateless vs Stateful**
 
 **What it is**
-How server handles client state in Spring Boot apps.
+How a server handles client data (state) in applications built with Spring Boot.
+
+---
+
+**Stateless**
 
 **Important points**
 
-* Stateless
-
-  * No client data stored on server
-  * Each request is independent
-  * Scalable (used in REST APIs)
-
-* Stateful
-
-  * Server stores client session/data
-  * Requests depend on previous state
-  * Less scalable
+* Server **does NOT store** client state
+* Each request is **independent**
+* Client sends all required data every time (e.g., token)
+* Highly **scalable** and easy to distribute
+* Used in REST APIs
 
 **Example**
 
-* Stateless → JWT token sent in every request
-* Stateful → session stored on server after login
+```http
+GET /users/1
+Authorization: Bearer <JWT>
+```
+
+→ Server uses token → no session stored
+
+---
+
+**Stateful**
+
+**Important points**
+
+* Server **stores client state** (session)
+* Requests depend on previous interactions
+* Less scalable (server memory used)
+* Common in traditional web apps
+
+**Example**
+
+```http
+Login → server creates session
+Next request → sessionId sent in cookie
+```
+
+---
+
+ Key differences
+
+* Stateless → no memory on server, scalable
+* Stateful → server remembers client, less scalable
+
+ Simple idea:
+
+* Stateless = “each request is new”
+* Stateful = “server remembers you”
 
 ---
 
